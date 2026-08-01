@@ -17,10 +17,13 @@ datasource db {
 // ---------------------------------------------------------------------------
 
 enum ProductCategory {
+  DAIRY
   BEVERAGES
   SNACKS
+  BAKERY
   PERSONAL_CARE
-  HOUSEHOLD_STAPLES
+  HOUSEHOLD
+  FROZEN_FOODS
 }
 
 enum ABCClass {
