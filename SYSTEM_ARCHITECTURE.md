@@ -1,7 +1,7 @@
 # OpsPilot AI — System Architecture
 
-**Status:** Draft for approval (v2 — simplified academic scope)
-**Last updated:** 2026-08-02
+**Status:** Reflects the implemented application (v2 — simplified academic scope)
+**Last updated:** 2026-08-03
 **Related:** [PROJECT_PLAN.md](./PROJECT_PLAN.md) · [PRODUCT_REQUIREMENTS_DOCUMENT.md](./PRODUCT_REQUIREMENTS_DOCUMENT.md) · [DEVELOPMENT_ROADMAP.md](./DEVELOPMENT_ROADMAP.md)
 
 ---
@@ -251,28 +251,26 @@ sequenceDiagram
 
 ---
 
-## 7. API Design (Representative Endpoints)
+## 7. API Design (Actual Endpoints)
 
-All endpoints are prefixed `/api`. No auth/session check is required to read or write demo data (single-dataset app); Zod input validation still applies to every mutating endpoint.
+All endpoints are prefixed `/api`. No auth/session check is required to read or write demo data (single-dataset app, see §8). Routes are consolidated per dashboard page rather than one endpoint per engine — a page's Server Component calls the matching `lib/presentation/*.ts` module directly (no HTTP round-trip); the route below is a thin wrapper over the same module, used for client-side refetches (filters, pagination) and write actions. Query parameters and request bodies are validated by hand (`lib/api/http.ts`: enum allow-lists, positive-integer checks) rather than a schema library; invalid input returns `400` with a `{ error: string }` body, and every route shares the same try/catch wrapper so an unexpected failure returns `500` with that same envelope instead of an unhandled error.
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/api/skus` | List SKUs with computed stock status, ABC class |
-| GET | `/api/skus/:id` | SKU detail incl. history, forecast, calculation breakdown |
-| GET | `/api/inventory?warehouseId=` | Inventory levels by warehouse |
-| POST | `/api/inventory/movements` | Record a stock movement |
-| GET | `/api/purchase-orders` | List POs |
-| POST | `/api/purchase-orders` | Create PO (EOQ pre-filled) |
-| PATCH | `/api/purchase-orders/:id/status` | Update PO status |
-| GET | `/api/suppliers` | List suppliers with reliability score |
-| GET | `/api/suppliers/:id/scorecard` | Supplier scorecard detail |
-| GET | `/api/forecasts/:skuId` | Forecast series + accuracy |
-| GET | `/api/recommendations` | Recommendation feed (filterable by module/severity) |
-| PATCH | `/api/recommendations/:id` | Accept/Dismiss/Snooze |
-| POST | `/api/copilot/chat` | Ask the grounded Copilot a question |
-| GET | `/api/analytics/summary` | Company-wide KPI summary |
-| GET | `/api/export/:entity` | CSV export |
-| POST | `/api/recalculate` | Manually trigger domain-layer recalculation (replaces background job) |
+| GET | `/api/dashboard` | Executive Dashboard: KPIs, Executive Brief, warehouse utilization, top recommendations |
+| GET | `/api/inventory?warehouseId=&category=&stockStatus=&page=&pageSize=` | Paginated Inventory Intelligence list + KPIs + category breakdown |
+| GET | `/api/inventory/:productId` | Inventory detail for one product: per-warehouse position, demand history, demand statistics |
+| GET | `/api/procurement?status=&supplierId=&warehouseId=&page=&pageSize=` | EOQ recommendations + paginated purchase order list |
+| GET | `/api/suppliers` | Supplier list with reliability scores |
+| GET | `/api/suppliers/:supplierId` | Supplier scorecard detail |
+| GET | `/api/forecasting?productId=` | Forecast series + accuracy for one product |
+| GET | `/api/analytics` | Company-wide analytics: ABC classification, turnover, warehouse utilization |
+| GET | `/api/copilot?status=&severity=&category=` | Recommendation feed (defaults to `status=ACTIVE`) |
+| PATCH | `/api/copilot/recommendations/:id` | Update a recommendation's status (Accept/Dismiss/Snooze) |
+| POST | `/api/copilot/narrate` | Batch-generate AI narratives for eligible ACTIVE recommendations |
+| GET | `/api/products` | Product catalog (id, sku, name, category, abcClass) for pickers/filters |
+| GET | `/api/warehouses` | Warehouse list for pickers/filters |
+| POST | `/api/recalculate` | Runs every engine's orchestrator in dependency order: Inventory → Suppliers → Forecast → Analytics (ABC) → Recommendations |
 
 ---
 
@@ -295,34 +293,47 @@ All endpoints are prefixed `/api`. No auth/session check is required to read or 
 - **Optional live demo**: deploy the same Next.js app to Vercel; swap the Prisma datasource to a free-tier Neon Postgres instance if persistent hosted storage is wanted (SQLite files don't persist reliably on serverless hosts). This is a one-line `datasource` change in `schema.prisma`, not an architecture change.
 - No CI pipeline, no staging environment, no preview deploys — a single `npm run build && npm run start` (or `vercel deploy`) is sufficient for an academic submission.
 
-## 11. Repository Structure (Proposed)
+## 11. Repository Structure (Actual)
 
 ```
 opspilot-ai/
-├── app/                         # Next.js App Router pages & layouts
-│   ├── dashboard/                # Executive Dashboard
-│   ├── inventory/                 # Inventory Intelligence
-│   ├── procurement/               # Procurement
-│   ├── suppliers/                 # Suppliers
-│   ├── forecasting/               # Demand Forecasting
-│   ├── analytics/                 # Analytics
-│   ├── copilot/                   # Operations Copilot (AI)
-│   └── api/                       # Route handlers
+├── app/                               # Next.js App Router pages & layouts
+│   ├── page.tsx                       # "/" — Executive Dashboard
+│   ├── loading.tsx / error.tsx / not-found.tsx
+│   ├── inventory/
+│   │   ├── page.tsx                   # Inventory Intelligence list
+│   │   └── [productId]/page.tsx       # Inventory detail
+│   ├── procurement/page.tsx           # Procurement (EOQ + purchase orders)
+│   ├── suppliers/
+│   │   ├── page.tsx                   # Suppliers list
+│   │   └── [supplierId]/page.tsx      # Supplier scorecard
+│   ├── forecasting/page.tsx           # Demand Forecasting
+│   ├── analytics/page.tsx             # Analytics
+│   ├── copilot/page.tsx               # Operations Copilot (recommendations)
+│   └── api/                           # Route handlers — thin wrappers over lib/presentation
+│       ├── dashboard/, inventory/, procurement/, suppliers/,
+│       ├── forecasting/, analytics/, copilot/, products/,
+│       └── warehouses/, recalculate/
 ├── lib/
-│   ├── domain/                   # Framework-agnostic business logic
+│   ├── domain/                        # Framework-agnostic business logic (pure, Prisma-free)
 │   │   ├── inventory/
 │   │   ├── procurement/
 │   │   ├── suppliers/
 │   │   ├── forecasting/
+│   │   ├── analytics/
 │   │   └── recommendations/
-│   ├── ai/                       # Claude API client + prompt templates
-│   └── db/                       # Prisma client
+│   ├── presentation/                  # Page/route data composition (dashboardData.ts, inventoryData.ts, ...)
+│   ├── api/                           # Shared error handling + query-param validation (lib/api/http.ts)
+│   ├── ai/                            # Claude API client + prompt templates (batch narration only)
+│   ├── db/                            # Prisma client singleton
+│   └── format.ts                      # Locale-independent currency/number/date formatting
 ├── prisma/
 │   ├── schema.prisma
-│   └── seed.ts                   # NovaFoods synthetic dataset generator
-├── components/                   # Shared UI components (charts, tables, KPI tiles)
+│   └── seed.ts                        # NovaFoods synthetic dataset generator
+├── components/                        # ui/, nav/, and per-module charts/tables/filters
 └── tests/
-    └── unit/                     # Domain logic tests (Vitest) — reference-value checks
+    ├── unit/                          # Domain logic tests (Vitest) — reference-value checks
+    └── integration/                   # Orchestrator/pipeline integration tests (Vitest)
 ```
 
 ## 12. Key Architectural Decisions (ADR Summary)

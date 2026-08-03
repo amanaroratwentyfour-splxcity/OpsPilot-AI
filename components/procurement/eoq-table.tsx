@@ -1,0 +1,49 @@
+import Link from "next/link";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EmptyState } from "@/components/empty-state";
+import { formatNumber } from "@/lib/format";
+import { PackageCheck } from "lucide-react";
+import type { getProcurementOverview } from "@/lib/presentation/procurementData";
+
+type EOQItem = Awaited<ReturnType<typeof getProcurementOverview>>["eoqRecommendations"][number];
+
+export function EOQTable({ items }: { items: EOQItem[] }) {
+  if (items.length === 0) {
+    return (
+      <EmptyState
+        icon={PackageCheck}
+        title="No products currently need reordering"
+        description="EOQ suggestions appear here for products with a critical or low stock position."
+      />
+    );
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>SKU</TableHead>
+          <TableHead>Product</TableHead>
+          <TableHead className="text-right">Current On Hand</TableHead>
+          <TableHead className="text-right">Annual Demand</TableHead>
+          <TableHead className="text-right">Suggested Order Qty (EOQ)</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {items.map((item) => (
+          <TableRow key={item.productId}>
+            <TableCell className="font-mono text-xs">{item.sku}</TableCell>
+            <TableCell>
+              <Link href={`/inventory/${item.productId}`} className="font-medium hover:underline">
+                {item.name}
+              </Link>
+            </TableCell>
+            <TableCell className="text-right">{formatNumber(item.currentOnHand)}</TableCell>
+            <TableCell className="text-right">{formatNumber(item.annualDemand)}</TableCell>
+            <TableCell className="text-right font-semibold">{formatNumber(item.eoq)}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
