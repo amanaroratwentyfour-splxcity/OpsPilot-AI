@@ -10,6 +10,7 @@ import {
   TrendingUp,
   BarChart3,
   Sparkles,
+  FileSpreadsheet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { href: "/forecasting", label: "Demand Forecasting", icon: TrendingUp },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/copilot", label: "Operations Copilot", icon: Sparkles },
+  { href: "/import-center", label: "Import Center", icon: FileSpreadsheet },
 ];
 
 export function Sidebar() {
