@@ -1,13 +1,22 @@
 import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/empty-state";
+import { CreatePODialog } from "./create-po-dialog";
 import { formatNumber } from "@/lib/format";
 import { PackageCheck } from "lucide-react";
 import type { getProcurementOverview } from "@/lib/presentation/procurementData";
 
 type EOQItem = Awaited<ReturnType<typeof getProcurementOverview>>["eoqRecommendations"][number];
 
-export function EOQTable({ items }: { items: EOQItem[] }) {
+export function EOQTable({
+  items,
+  suppliers,
+  warehouses,
+}: {
+  items: EOQItem[];
+  suppliers: { id: string; name: string }[];
+  warehouses: { id: string; name: string }[];
+}) {
   if (items.length === 0) {
     return (
       <EmptyState
@@ -27,6 +36,7 @@ export function EOQTable({ items }: { items: EOQItem[] }) {
           <TableHead className="text-right">Current On Hand</TableHead>
           <TableHead className="text-right">Annual Demand</TableHead>
           <TableHead className="text-right">Suggested Order Qty (EOQ)</TableHead>
+          <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -41,6 +51,9 @@ export function EOQTable({ items }: { items: EOQItem[] }) {
             <TableCell className="text-right">{formatNumber(item.currentOnHand)}</TableCell>
             <TableCell className="text-right">{formatNumber(item.annualDemand)}</TableCell>
             <TableCell className="text-right font-semibold">{formatNumber(item.eoq)}</TableCell>
+            <TableCell className="text-right">
+              <CreatePODialog item={item} suppliers={suppliers} warehouses={warehouses} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -21,7 +21,7 @@ export function ParetoChart({
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>
-          <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+          <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis dataKey="sku" tick={{ fontSize: 9 }} interval={3} angle={-45} textAnchor="end" height={60} />
             <YAxis yAxisId="left" tick={{ fontSize: 11 }} />

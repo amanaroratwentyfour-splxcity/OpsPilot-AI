@@ -18,7 +18,7 @@ export default async function ProcurementPage({
 }: {
   searchParams: { status?: string; supplierId?: string; warehouseId?: string; page?: string };
 }) {
-  const [{ eoqRecommendations, purchaseOrders, totalPurchaseOrders, page, pageSize, totalPages, kpis }, suppliers] =
+  const [{ eoqRecommendations, purchaseOrders, totalPurchaseOrders, page, pageSize, totalPages, kpis }, suppliers, warehouses] =
     await Promise.all([
       getProcurementOverview({
         status: matchEnumValue(searchParams.status, Object.values(PurchaseOrderStatus)),
@@ -27,6 +27,7 @@ export default async function ProcurementPage({
         page: toPositiveInt(searchParams.page, 1),
       }),
       prisma.supplier.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+      prisma.warehouse.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
     ]);
 
   return (
@@ -68,7 +69,7 @@ export default async function ProcurementPage({
         </TabsContent>
 
         <TabsContent value="eoq" className="rounded-lg border bg-card p-4">
-          <EOQTable items={eoqRecommendations} />
+          <EOQTable items={eoqRecommendations} suppliers={suppliers} warehouses={warehouses} />
         </TabsContent>
       </Tabs>
     </div>

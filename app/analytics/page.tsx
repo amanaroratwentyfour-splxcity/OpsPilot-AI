@@ -6,11 +6,19 @@ import { ParetoChart } from "@/components/analytics/pareto-chart";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { ABCClassBadge } from "@/components/badges";
+import { Pagination } from "@/components/pagination";
 import { getAnalyticsOverview } from "@/lib/presentation/analyticsData";
 import { WAREHOUSE_UTILIZATION_THRESHOLDS } from "@/lib/domain/config";
 import { formatScore, formatCurrency, formatPercent, formatNumber } from "@/lib/format";
+import { toPositiveInt } from "@/lib/api/http";
 
-export default async function AnalyticsPage() {
+const ABC_TABLE_PAGE_SIZE = 50;
+
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
   const {
     operationsHealthScore,
     operationsHealthComponents,
@@ -19,6 +27,17 @@ export default async function AnalyticsPage() {
     abcRanking,
     classCounts,
   } = await getAnalyticsOverview();
+
+  // abcRanking already holds every product (not just the chart's top 40) —
+  // the table below paginates over the full list via the `page` search
+  // param so every Class B/C product stays reachable, not just top 50.
+  const abcPage = toPositiveInt(searchParams.page, 1);
+  const abcTotalPages = Math.max(1, Math.ceil(abcRanking.length / ABC_TABLE_PAGE_SIZE));
+  const abcPageClamped = Math.min(abcPage, abcTotalPages);
+  const abcPageRows = abcRanking.slice(
+    (abcPageClamped - 1) * ABC_TABLE_PAGE_SIZE,
+    abcPageClamped * ABC_TABLE_PAGE_SIZE,
+  );
 
   return (
     <div className="space-y-6">
@@ -66,9 +85,11 @@ export default async function AnalyticsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {abcRanking.slice(0, 50).map((row, index) => (
+              {abcPageRows.map((row, index) => (
                 <TableRow key={row.productId}>
-                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {(abcPageClamped - 1) * ABC_TABLE_PAGE_SIZE + index + 1}
+                  </TableCell>
                   <TableCell className="font-mono text-xs">{row.sku}</TableCell>
                   <TableCell className="font-medium">{row.name}</TableCell>
                   <TableCell className="text-muted-foreground">{row.category.replace("_", " ")}</TableCell>
@@ -81,9 +102,12 @@ export default async function AnalyticsPage() {
               ))}
             </TableBody>
           </Table>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Showing top 50 of {abcRanking.length} products by usage value.
-          </p>
+          <Pagination
+            page={abcPageClamped}
+            totalPages={abcTotalPages}
+            totalItems={abcRanking.length}
+            pageSize={ABC_TABLE_PAGE_SIZE}
+          />
         </CardContent>
       </Card>
     </div>

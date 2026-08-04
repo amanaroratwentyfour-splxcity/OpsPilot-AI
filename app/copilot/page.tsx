@@ -4,19 +4,24 @@ import { KpiCard } from "@/components/kpi-card";
 import { FilterSelect } from "@/components/filter-select";
 import { CopilotExplorer } from "@/components/copilot/copilot-explorer";
 import { getCopilotOverview } from "@/lib/presentation/copilotData";
-import { RECOMMENDATION_SEVERITIES, RECOMMENDATION_CATEGORIES } from "@/lib/presentation/constants";
+import {
+  RECOMMENDATION_SEVERITIES,
+  RECOMMENDATION_CATEGORIES,
+  RECOMMENDATION_STATUSES,
+} from "@/lib/presentation/constants";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { matchEnumValue } from "@/lib/api/http";
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity, RecommendationStatus } from "@/lib/generated/prisma/enums";
 
 export default async function CopilotPage({
   searchParams,
 }: {
-  searchParams: { severity?: string; category?: string };
+  searchParams: { severity?: string; category?: string; status?: string };
 }) {
   const { items, kpis } = await getCopilotOverview({
     severity: matchEnumValue(searchParams.severity, Object.values(RecommendationSeverity)),
     category: matchEnumValue(searchParams.category, Object.values(RecommendationCategory)),
+    status: matchEnumValue(searchParams.status, Object.values(RecommendationStatus)),
   });
 
   return (
@@ -46,6 +51,10 @@ export default async function CopilotPage({
       <div className="flex flex-wrap items-center gap-3">
         <FilterSelect paramKey="severity" label="Severity" allLabel="All Severities" options={RECOMMENDATION_SEVERITIES} />
         <FilterSelect paramKey="category" label="Category" allLabel="All Categories" options={RECOMMENDATION_CATEGORIES} />
+        {/* Defaults to ACTIVE (matching getCopilotOverview's own default)
+            so Snoozed/Dismissed/Accepted recommendations aren't a dead end
+            — this is the only way to see them again after acting on them. */}
+        <FilterSelect paramKey="status" label="Status" allLabel="Active" options={RECOMMENDATION_STATUSES.filter((s) => s !== "ACTIVE")} />
       </div>
 
       <CopilotExplorer initialItems={items} />

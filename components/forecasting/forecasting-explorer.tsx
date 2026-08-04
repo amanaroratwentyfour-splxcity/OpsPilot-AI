@@ -23,6 +23,7 @@ export function ForecastingExplorer({
   const [data, setData] = useState<ForecastData>(initialData);
   const [selectedId, setSelectedId] = useState<string>(initialData?.product.id ?? products[0]?.id ?? "");
   const [isPending, startTransition] = useTransition();
+  const [productSearch, setProductSearch] = useState("");
 
   function handleSelect(productId: string) {
     setSelectedId(productId);
@@ -34,18 +35,45 @@ export function ForecastingExplorer({
     });
   }
 
+  const normalizedSearch = productSearch.trim().toLowerCase();
+
   return (
     <div className="space-y-6">
-      <Select value={selectedId} onValueChange={handleSelect}>
+      <Select value={selectedId} onValueChange={handleSelect} onOpenChange={(open) => !open && setProductSearch("")}>
         <SelectTrigger className="w-[320px]">
           <SelectValue placeholder="Select a product" />
         </SelectTrigger>
         <SelectContent>
-          {products.map((p) => (
-            <SelectItem key={p.id} value={p.id}>
-              {p.sku} — {p.name}
-            </SelectItem>
-          ))}
+          {/* A plain input, not a SelectItem — stopPropagation keeps Radix's
+              roving-focus/typeahead handling from stealing keystrokes typed
+              here. Non-matching items stay mounted (just hidden) rather than
+              being removed, so SelectValue can still resolve the currently
+              selected item's label after the list is filtered. */}
+          <input
+            autoFocus
+            placeholder="Search 203 products…"
+            value={productSearch}
+            onChange={(e) => setProductSearch(e.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
+            className="mb-1 w-full rounded-sm border border-input bg-transparent px-2 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
+          />
+          {products.map((p) => {
+            const matches =
+              normalizedSearch === "" ||
+              p.sku.toLowerCase().includes(normalizedSearch) ||
+              p.name.toLowerCase().includes(normalizedSearch);
+            return (
+              <SelectItem key={p.id} value={p.id} className={matches ? undefined : "hidden"}>
+                {p.sku} — {p.name}
+              </SelectItem>
+            );
+          })}
+          {products.every(
+            (p) =>
+              normalizedSearch !== "" &&
+              !p.sku.toLowerCase().includes(normalizedSearch) &&
+              !p.name.toLowerCase().includes(normalizedSearch),
+          ) && <p className="px-2 py-3 text-center text-sm text-muted-foreground">No products match &ldquo;{productSearch}&rdquo;</p>}
         </SelectContent>
       </Select>
 

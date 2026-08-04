@@ -1,8 +1,16 @@
 "use client";
 
 import { type ChangeEvent, useState } from "react";
-import { AlertCircle, Loader2, Upload } from "lucide-react";
+import { AlertCircle, AlertTriangle, Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ValidationReportTable } from "./validation-report-table";
 import { ImportSummary } from "./import-summary";
 import type { ValidationReport } from "@/lib/import/validationReport";
@@ -42,6 +50,7 @@ export function UploadPanel() {
   const [validation, setValidation] = useState<ValidateResponse | null>(null);
   const [importResult, setImportResult] = useState<ImportResponse | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   async function handleFileSelected(event: ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0];
@@ -72,12 +81,14 @@ export function UploadPanel() {
     }
   }
 
-  async function handleImportClick() {
+  function handleImportClick() {
     if (!file) return;
-    if (!window.confirm("This will replace the current dataset with the uploaded workbook. Continue?")) {
-      return;
-    }
+    setConfirmOpen(true);
+  }
 
+  async function handleConfirmedImport() {
+    if (!file) return;
+    setConfirmOpen(false);
     setPhase("importing");
     setErrorMessage(null);
 
@@ -146,6 +157,30 @@ export function UploadPanel() {
       )}
 
       {phase === "imported" && importResult && <ImportSummary {...importResult} />}
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Replace the current dataset?
+            </DialogTitle>
+            <DialogDescription>
+              Importing {file?.name} will permanently replace every product, supplier, warehouse, inventory
+              position, demand history row, and purchase order currently in the database, then recalculate all
+              KPIs and recommendations. <strong className="text-foreground">This cannot be undone.</strong>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleConfirmedImport}>
+              Replace dataset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

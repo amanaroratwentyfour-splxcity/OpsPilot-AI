@@ -28,8 +28,11 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
       sku: true,
       name: true,
       unitCost: true,
+      primarySupplier: { select: { id: true, name: true } },
       demandHistory: { orderBy: { periodDate: "asc" }, select: { quantitySold: true } },
-      inventory: { select: { onHandQty: true } },
+      inventory: {
+        select: { onHandQty: true, stockStatus: true, warehouse: { select: { id: true, name: true } } },
+      },
     },
     orderBy: { sku: "asc" },
   });
@@ -37,13 +40,22 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
   const eoqRecommendations = flaggedProducts.map((product) => {
     const { annualDemand } = computeAnnualDemand(product.demandHistory.map((d) => d.quantitySold));
     const eoq = computeEOQ(annualDemand, product.unitCost);
+    // The specific warehouse(s) actually driving the CRITICAL/LOW flag —
+    // used to default "Create PO"'s warehouse picker to a relevant one
+    // instead of an arbitrary first warehouse in the system.
+    const flaggedWarehouse = product.inventory.find((inv) => inv.stockStatus === "CRITICAL" || inv.stockStatus === "LOW")?.warehouse;
     return {
       productId: product.id,
       sku: product.sku,
       name: product.name,
+      unitCost: product.unitCost,
       annualDemand,
       eoq,
       currentOnHand: product.inventory.reduce((sum, inv) => sum + inv.onHandQty, 0),
+      primarySupplierId: product.primarySupplier?.id ?? null,
+      primarySupplierName: product.primarySupplier?.name ?? null,
+      flaggedWarehouseId: flaggedWarehouse?.id ?? null,
+      flaggedWarehouseName: flaggedWarehouse?.name ?? null,
     };
   });
 

@@ -162,4 +162,28 @@ describe("recommendation status transitions (integration)", () => {
     const activeInventory = await getCopilotOverview({ category: "INVENTORY" as const });
     expect(activeInventory.items.some((item) => item.id === fixture.id)).toBe(false);
   });
+
+  // Regression coverage for UX_AUDIT.md C1: Snooze/Dismiss used to be a
+  // one-way trip with no page anywhere to view or undo them. The
+  // Reactivate button (RecommendationCard) sets status back to ACTIVE via
+  // the same PATCH endpoint Accept/Snooze/Dismiss already use — this
+  // proves the read side of that round trip: once reactivated, the item
+  // leaves the SNOOZED view and returns to the default ACTIVE view.
+  it("a Snoozed recommendation reactivated back to ACTIVE leaves the Snoozed view and reappears in the default view", async () => {
+    const fixture = await createActiveFixture();
+    await prisma.aIRecommendation.update({ where: { id: fixture.id }, data: { status: "SNOOZED" } });
+    expect((await getCopilotOverview({ status: "SNOOZED" as const })).items.some((i) => i.id === fixture.id)).toBe(
+      true,
+    );
+
+    await prisma.aIRecommendation.update({ where: { id: fixture.id }, data: { status: "ACTIVE" } });
+
+    const snoozedView = await getCopilotOverview({ status: "SNOOZED" as const });
+    expect(snoozedView.items.some((item) => item.id === fixture.id)).toBe(false);
+
+    const defaultView = await getCopilotOverview({});
+    const found = defaultView.items.find((item) => item.id === fixture.id);
+    expect(found).toBeDefined();
+    expect(found?.status).toBe("ACTIVE");
+  });
 });

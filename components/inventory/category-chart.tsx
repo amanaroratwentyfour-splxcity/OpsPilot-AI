@@ -18,7 +18,7 @@ export function CategoryChart({ data }: { data: { category: string; count: numbe
             <XAxis dataKey="category" tick={{ fontSize: 11 }} interval={0} angle={-20} textAnchor="end" height={50} />
             <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
             <Tooltip />
-            <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

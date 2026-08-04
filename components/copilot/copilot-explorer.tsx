@@ -25,8 +25,13 @@ export function CopilotExplorer({ initialItems }: { initialItems: Overview["item
     setItems(initialItems);
   }, [initialItems]);
 
-  function handleStatusChange(id: string, status: string) {
-    setItems((prev) => prev.filter((item) => item.id !== id || status === "ACTIVE"));
+  function handleStatusChange(id: string) {
+    // This list is always scoped to a single status (the page's `status`
+    // filter, or ACTIVE by default) — any status change, including
+    // reactivating a Snoozed/Dismissed item back to ACTIVE, moves the item
+    // out of whichever status is currently being viewed, so it's always
+    // removed from view here rather than conditionally kept.
+    setItems((prev) => prev.filter((item) => item.id !== id));
     router.refresh();
   }
 

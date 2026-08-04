@@ -30,7 +30,15 @@ export function StockStatusChart({ counts }: StockStatusChartProps) {
         ) : (
           <ResponsiveContainer width="100%" height={240}>
             <PieChart>
-              <Pie data={data} dataKey="value" nameKey="name" innerRadius={55} outerRadius={85} paddingAngle={2}>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={55}
+                outerRadius={85}
+                paddingAngle={2}
+                isAnimationActive={false}
+              >
                 {data.map((entry) => (
                   <Cell key={entry.name} fill={COLORS[entry.name]} />
                 ))}
