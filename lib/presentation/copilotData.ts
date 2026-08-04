@@ -25,6 +25,12 @@ export async function getCopilotOverview(filters: CopilotFilters = {}) {
     category: filters.category,
   };
 
+  // KPIs are scoped to the same severity/category filters as the list
+  // itself (but not `status`, since byStatus needs every status and
+  // activeSeverity needs every severity within ACTIVE) — so the KPI row
+  // always summarizes exactly what's shown below it, not the whole table.
+  const filterScope = { severity: filters.severity, category: filters.category };
+
   const [recommendations, statusCounts, activeSeverityCounts] = await Promise.all([
     prisma.aIRecommendation.findMany({
       where,
@@ -43,8 +49,12 @@ export async function getCopilotOverview(filters: CopilotFilters = {}) {
       },
       orderBy: [{ severity: "asc" }, { createdAt: "desc" }],
     }),
-    prisma.aIRecommendation.groupBy({ by: ["status"], _count: true }),
-    prisma.aIRecommendation.groupBy({ by: ["severity"], where: { status: "ACTIVE" }, _count: true }),
+    prisma.aIRecommendation.groupBy({ by: ["status"], where: filterScope, _count: true }),
+    prisma.aIRecommendation.groupBy({
+      by: ["severity"],
+      where: { status: "ACTIVE", ...filterScope },
+      _count: true,
+    }),
   ]);
 
   const items = recommendations.map((r) => ({
@@ -72,7 +82,7 @@ export async function getCopilotOverview(filters: CopilotFilters = {}) {
 
   const activeTotal = activeSeverity.CRITICAL + activeSeverity.WARNING + activeSeverity.INFO;
   const activeNarrated = await prisma.aIRecommendation.count({
-    where: { status: "ACTIVE", aiNarrative: { not: null } },
+    where: { status: "ACTIVE", aiNarrative: { not: null }, ...filterScope },
   });
 
   return {

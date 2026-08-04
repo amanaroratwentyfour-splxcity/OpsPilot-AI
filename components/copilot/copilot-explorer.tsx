@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,15 @@ export function CopilotExplorer({ initialItems }: { initialItems: Overview["item
   const [items, setItems] = useState(initialItems);
   const [narrateStatus, setNarrateStatus] = useState<"idle" | "running" | "done" | "unavailable">("idle");
   const [narrateMessage, setNarrateMessage] = useState<string | null>(null);
+
+  // The Server Component re-fetches and passes a new `initialItems` array
+  // whenever the URL's filters change or router.refresh() runs (status
+  // change, recalculation) — without this, `items` would stay frozen at
+  // whatever it was on first mount, since useState()'s argument only seeds
+  // the initial value and is ignored on subsequent re-renders.
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
 
   function handleStatusChange(id: string, status: string) {
     setItems((prev) => prev.filter((item) => item.id !== id || status === "ACTIVE"));
