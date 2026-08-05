@@ -4,6 +4,7 @@ import "./globals.css";
 import { Sidebar } from "@/components/nav/sidebar";
 import { Topbar } from "@/components/nav/topbar";
 import { PageTransition } from "@/components/nav/page-transition";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,21 +28,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Dark is the primary experience (DESIGN_SPECIFICATION.md §3.1) — the
-    // full light-mode token set in globals.css stays valid and reachable
-    // by simply removing this class, so light mode remains a real,
-    // supported alternate rather than dead code.
-    <html lang="en" className="dark">
+    // suppressHydrationWarning is required by next-themes: its blocking
+    // script sets the `dark` class on <html> before hydration (reading
+    // localStorage, falling back to the OS preference per Phase 4.3), so
+    // the class React sees on the server render will legitimately differ
+    // from the client's first paint. Only the class attribute is affected.
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Topbar />
-            <main className="flex-1 overflow-y-auto bg-background p-6">
-              <PageTransition>{children}</PageTransition>
-            </main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <Topbar />
+              <main className="flex-1 overflow-y-auto bg-background p-6">
+                <PageTransition>{children}</PageTransition>
+              </main>
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );

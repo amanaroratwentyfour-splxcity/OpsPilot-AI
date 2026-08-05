@@ -151,6 +151,24 @@
   }
 }
 
+/* Phase 4.3 — theme switching (light/dark) should feel smooth, not instant
+   or jarring. Scoped deliberately to background/text/border colors only
+   (the token properties that actually change value between themes), never
+   `transition: all`, so this never fights transform/opacity animations
+   already used for hover, dialogs, or the shimmer skeleton elsewhere.
+   Any element with its own more specific `transition-colors` utility (e.g.
+   button hover) keeps its own faster timing — this is only a fallback for
+   everything else on the page. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, color, border-color;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+  }
+}
+
 /* DESIGN_SPECIFICATION.md §11 — reduced motion is a hard requirement, not
    a nice-to-have: every transition/animation this design system introduces
    (card hover, dialog/sheet/dropdown enter-exit, skeleton shimmer) collapses

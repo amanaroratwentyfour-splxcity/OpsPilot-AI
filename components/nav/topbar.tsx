@@ -1,9 +1,10 @@
 import { RecalculateButton } from "./recalculate-button";
 import { MobileNav } from "./mobile-nav";
+import { ThemeToggle } from "./theme-toggle";
 
 export function Topbar() {
   return (
-    <header className="flex h-16 items-center justify-between gap-3 border-b bg-surface px-6">
+    <header className="flex h-16 items-center justify-between gap-2 border-b bg-surface px-4 sm:gap-3 sm:px-6">
       <div className="flex items-center gap-3">
         <MobileNav />
         <div>
@@ -11,7 +12,10 @@ export function Topbar() {
           <p className="text-caption text-muted-foreground">AI-grounded recommendations for NovaFoods FMCG operations</p>
         </div>
       </div>
-      <RecalculateButton />
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <RecalculateButton />
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
