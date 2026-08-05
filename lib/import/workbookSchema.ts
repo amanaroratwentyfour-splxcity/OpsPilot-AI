@@ -131,7 +131,7 @@ export const WORKBOOK_SHEETS: readonly WorkbookSheetDefinition[] = [
     naturalKey: ["SKU"],
     references: [{ column: "Primary Supplier Name", targetSheet: "Suppliers", targetColumn: "Supplier Name" }],
     exampleRows: [
-      ["DAI-0001", "NovaFresh Toned Milk 500ml", "DAIRY", "ml", 15.0, 18.83, 4, "TRUE", "Amrit Agro Foods Pvt. Ltd."],
+      ["DAI-0001", "Toned Milk 500ml", "DAIRY", "ml", 15.0, 18.83, 4, "TRUE", "Amrit Agro Foods Pvt. Ltd."],
       [
         "BEV-0010",
         "NovaBrew Instant Coffee 100g",
@@ -210,8 +210,8 @@ export const WORKBOOK_SHEETS: readonly WorkbookSheetDefinition[] = [
     naturalKey: ["Warehouse Name"],
     references: [],
     exampleRows: [
-      ["NovaFoods Delhi Distribution Center", "Delhi, India", 224447],
-      ["NovaFoods Mumbai Distribution Center", "Mumbai, India", 174091],
+      ["Delhi Distribution Center", "Delhi, India", 224447],
+      ["Mumbai Distribution Center", "Mumbai, India", 174091],
     ],
   },
   {
@@ -246,9 +246,9 @@ export const WORKBOOK_SHEETS: readonly WorkbookSheetDefinition[] = [
       { column: "Warehouse Name", targetSheet: "Warehouses", targetColumn: "Warehouse Name" },
     ],
     exampleRows: [
-      ["DAI-0001", "NovaFoods Delhi Distribution Center", 850],
-      ["DAI-0001", "NovaFoods Mumbai Distribution Center", 410],
-      ["BEV-0010", "NovaFoods Mumbai Distribution Center", 220],
+      ["DAI-0001", "Delhi Distribution Center", 850],
+      ["DAI-0001", "Mumbai Distribution Center", 410],
+      ["BEV-0010", "Mumbai Distribution Center", 220],
     ],
   },
   {
@@ -339,7 +339,7 @@ export const WORKBOOK_SHEETS: readonly WorkbookSheetDefinition[] = [
       [
         "PO-1001",
         "Amrit Agro Foods Pvt. Ltd.",
-        "NovaFoods Delhi Distribution Center",
+        "Delhi Distribution Center",
         "RECEIVED",
         "2026-05-20",
         "2026-05-24",
@@ -348,7 +348,7 @@ export const WORKBOOK_SHEETS: readonly WorkbookSheetDefinition[] = [
       [
         "PO-1002",
         "Malabar Coffee Estates Pvt. Ltd.",
-        "NovaFoods Mumbai Distribution Center",
+        "Mumbai Distribution Center",
         "IN_TRANSIT",
         "2026-06-10",
         "2026-06-17",

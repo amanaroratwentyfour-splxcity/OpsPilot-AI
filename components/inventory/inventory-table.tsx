@@ -48,7 +48,7 @@ export function InventoryTable({ items }: { items: Item[] }) {
               </Link>
             </TableCell>
             <TableCell className="text-muted-foreground">
-              {item.warehouseName.replace("NovaFoods ", "").replace(" Distribution Center", "")}
+              {item.warehouseName}
             </TableCell>
             <TableCell className="text-muted-foreground">{item.category.replace("_", " ")}</TableCell>
             <TableCell className="text-right">{formatNumber(item.onHandQty)}</TableCell>

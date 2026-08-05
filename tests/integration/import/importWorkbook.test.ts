@@ -81,7 +81,7 @@ describe("importWorkbook (integration)", () => {
       const inventoryRow = await tx.inventory.findFirst({
         where: {
           product: { sku: "DAI-0001" },
-          warehouse: { name: "NovaFoods Delhi Distribution Center" },
+          warehouse: { name: "Delhi Distribution Center" },
         },
         include: { product: true, warehouse: true },
       });
@@ -94,7 +94,7 @@ describe("importWorkbook (integration)", () => {
       });
       expect(itemRow).not.toBeNull();
       expect(itemRow?.purchaseOrder.supplier.name).toBe("Amrit Agro Foods Pvt. Ltd.");
-      expect(itemRow?.purchaseOrder.warehouse.name).toBe("NovaFoods Delhi Distribution Center");
+      expect(itemRow?.purchaseOrder.warehouse.name).toBe("Delhi Distribution Center");
 
       const productWithSupplier = await tx.product.findUniqueOrThrow({
         where: { sku: "DAI-0001" },

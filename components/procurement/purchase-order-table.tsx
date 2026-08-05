@@ -42,7 +42,7 @@ export function PurchaseOrderTable({ purchaseOrders }: { purchaseOrders: Purchas
             >
               <TableCell className="font-medium">{po.supplierName}</TableCell>
               <TableCell className="text-muted-foreground">
-                {po.warehouseName.replace("NovaFoods ", "").replace(" Distribution Center", "")}
+                {po.warehouseName}
               </TableCell>
               <TableCell>
                 <PurchaseOrderStatusBadge status={po.status} />

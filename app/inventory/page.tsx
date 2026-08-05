@@ -169,7 +169,7 @@ export default async function InventoryPage({
               allLabel="All Warehouses"
               options={warehouses.map((w) => ({
                 value: w.id,
-                label: w.name.replace("NovaFoods ", "").replace(" Distribution Center", ""),
+                label: w.name,
               }))}
             />
             <FilterSelect paramKey="category" label="Category" allLabel="All Categories" options={PRODUCT_CATEGORIES} />

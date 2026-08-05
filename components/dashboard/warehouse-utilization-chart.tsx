@@ -28,7 +28,7 @@ export function WarehouseUtilizationChart({
   titleAction,
 }: WarehouseUtilizationChartProps) {
   const chartData = data.map((d) => ({
-    name: d.warehouseName.replace("NovaFoods ", "").replace(" Distribution Center", ""),
+    name: d.warehouseName,
     utilization: d.utilizationPercent ?? 0,
   }));
 

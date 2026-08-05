@@ -27,7 +27,7 @@ export function MobileNav() {
         </SheetTitle>
         <NavLinks onNavigate={() => setOpen(false)} />
         <div className="border-t p-4 text-caption text-muted-foreground">
-          NovaFoods Pvt. Ltd.
+          OpsPilot AI
           <br />
           Operations Decision Hub
         </div>

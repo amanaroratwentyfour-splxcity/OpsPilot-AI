@@ -9,7 +9,7 @@ export function Topbar() {
         <MobileNav />
         <div>
           <h1 className="text-sm font-semibold text-surface-foreground">Operations Decision Hub</h1>
-          <p className="text-caption text-muted-foreground">AI-grounded recommendations for NovaFoods FMCG operations</p>
+          <p className="text-caption text-muted-foreground">AI-grounded recommendations for your operations</p>
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
