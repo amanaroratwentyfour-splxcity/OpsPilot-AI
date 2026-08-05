@@ -1,23 +1,40 @@
 import { ClipboardList } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { ExecutiveBriefSections } from "@/lib/presentation/executiveBrief";
 
-export function ExecutiveBrief({ lines }: { lines: string[] }) {
+const SECTION_LABELS: { key: keyof ExecutiveBriefSections; label: string }[] = [
+  { key: "overallStatus", label: "Overall Status" },
+  { key: "inventory", label: "Inventory" },
+  { key: "supplierPerformance", label: "Supplier Performance" },
+  { key: "forecasting", label: "Forecasting" },
+  { key: "procurement", label: "Procurement" },
+  { key: "recommendedPriority", label: "Recommended Priority" },
+];
+
+/**
+ * "Today's Operational Brief" — the first thing a user reads on the
+ * dashboard (DESIGN_SPECIFICATION.md §7.3/§8.1), sectioned per the
+ * product spec rather than a flat bullet list. Every sentence is
+ * deterministic, template-filled prose from buildExecutiveBrief — no LLM
+ * call, no company-specific hardcoding.
+ */
+export function ExecutiveBrief({ sections }: { sections: ExecutiveBriefSections }) {
   return (
     <Card className="border-primary/20 bg-primary/[0.03]">
-      <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
+      <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-3">
         <ClipboardList className="h-4 w-4 text-primary" />
-        <CardTitle>Executive Brief</CardTitle>
+        <CardTitle>Today&apos;s Operational Brief</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-1.5 text-sm text-foreground">
-          {lines.map((line, index) => (
-            <li key={index} className="flex gap-2">
-              <span className="text-primary">•</span>
-              <span>{line}</span>
-            </li>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+          {SECTION_LABELS.map(({ key, label }) => (
+            <div key={key}>
+              <p className="text-label uppercase text-muted-foreground">{label}</p>
+              <p className="mt-1 text-sm text-foreground">{sections[key]}</p>
+            </div>
           ))}
-        </ul>
-        <p className="mt-3 text-xs text-muted-foreground">
+        </div>
+        <p className="mt-4 text-caption text-muted-foreground">
           Deterministic summary generated from current engine outputs.
         </p>
       </CardContent>

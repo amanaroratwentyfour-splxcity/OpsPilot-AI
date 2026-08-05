@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db/prisma";
 import { getCompanyAnalyticsSnapshot } from "@/lib/domain/analytics/recalculate";
 import { LOW_RELIABILITY_THRESHOLD, WAREHOUSE_UTILIZATION_THRESHOLDS } from "@/lib/domain/config";
 import { buildExecutiveBrief } from "./executiveBrief";
+import { deriveCompanyName } from "./companyIdentity";
+import type { RecommendationEntityType } from "./recommendationExplain";
 
 const SEVERITY_ORDER = { CRITICAL: 0, WARNING: 1, INFO: 2 } as const;
 
@@ -35,6 +37,9 @@ export async function getDashboardSummary() {
           metricJustification: true,
           aiNarrative: true,
           createdAt: true,
+          productId: true,
+          supplierId: true,
+          warehouseId: true,
           product: { select: { name: true } },
           supplier: { select: { name: true } },
           warehouse: { select: { name: true } },
@@ -42,6 +47,8 @@ export async function getDashboardSummary() {
         take: 50,
       }),
     ]);
+
+  const companyName = deriveCompanyName(warehouses.map((w) => w.name));
 
   const warehouseNameById = new Map(warehouses.map((w) => [w.id, w.name]));
   const warehouseUtilizations = snapshot.warehouseUtilizations.map((w) => ({
@@ -78,26 +85,41 @@ export async function getDashboardSummary() {
         SEVERITY_ORDER[b.severity as keyof typeof SEVERITY_ORDER],
     )
     .slice(0, 6)
-    .map((r) => ({
-      id: r.id,
-      category: r.category,
-      severity: r.severity,
-      justification: r.metricJustification,
-      aiNarrative: r.aiNarrative,
-      entityName: r.product?.name ?? r.supplier?.name ?? r.warehouse?.name ?? null,
-      createdAt: r.createdAt,
-    }));
+    .map((r) => {
+      const entityType: RecommendationEntityType = r.productId
+        ? "product"
+        : r.supplierId
+          ? "supplier"
+          : r.warehouseId
+            ? "warehouse"
+            : null;
+      return {
+        id: r.id,
+        category: r.category,
+        severity: r.severity,
+        justification: r.metricJustification,
+        aiNarrative: r.aiNarrative,
+        entityName: r.product?.name ?? r.supplier?.name ?? r.warehouse?.name ?? null,
+        entityType,
+        createdAt: r.createdAt,
+      };
+    });
 
   const brief = buildExecutiveBrief({
     operationsHealthScore: snapshot.operationsHealthScore,
     stockStatusCounts,
     supplierReliability: { belowThresholdCount },
+    forecastAccuracy: snapshot.operationsHealthComponents.avgForecastAccuracy,
     overduePurchaseOrderCount,
     warehouseUtilizations,
     warehouseCriticalThreshold: WAREHOUSE_UTILIZATION_THRESHOLDS.critical,
+    topPriorityItem: topRecommendations[0]
+      ? { entityName: topRecommendations[0].entityName, justification: topRecommendations[0].justification }
+      : null,
   });
 
   return {
+    companyName,
     brief,
     operationsHealthScore: snapshot.operationsHealthScore,
     operationsHealthComponents: snapshot.operationsHealthComponents,

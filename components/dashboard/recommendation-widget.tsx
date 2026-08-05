@@ -3,6 +3,8 @@ import { Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SeverityBadge } from "@/components/badges";
 import { EmptyState } from "@/components/empty-state";
+import { RecommendationWhyPopover } from "@/components/intelligence/recommendation-why-popover";
+import { explainRecommendation } from "@/lib/presentation/recommendationExplain";
 import type { DashboardSummary } from "@/lib/presentation/dashboardData";
 
 export function RecommendationWidget({
@@ -13,7 +15,7 @@ export function RecommendationWidget({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle>Top Recommendations</CardTitle>
+        <CardTitle>Recommendations</CardTitle>
         <Link href="/copilot" className="text-xs font-medium text-primary hover:underline">
           View all
         </Link>
@@ -34,6 +36,9 @@ export function RecommendationWidget({
                   <p className="truncate text-sm font-medium">{r.entityName ?? r.category}</p>
                   <p className="line-clamp-2 text-xs text-muted-foreground">{r.justification}</p>
                 </div>
+                <RecommendationWhyPopover
+                  explanation={explainRecommendation(r.category, r.severity, r.entityType)}
+                />
               </li>
             ))}
           </ul>
