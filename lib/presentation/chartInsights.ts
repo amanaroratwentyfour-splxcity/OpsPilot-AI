@@ -86,3 +86,27 @@ export function buildStockStatusInsight(counts: {
   }
   return { summary, insight: `${healthyPercent.toFixed(0)}% of positions are healthy, with no critical or overstocked positions.` };
 }
+
+export interface CategoryBreakdownInsight {
+  summary: string;
+  insight: string;
+}
+
+/** Deterministic Summary/Insight for the Inventory page's "Positions by Category" chart — same discipline as the two builders above, industry-agnostic (category names come straight from the imported dataset's own ProductCategory values). */
+export function buildCategoryBreakdownInsight(data: { category: string; count: number }[]): CategoryBreakdownInsight {
+  const summary = "Every inventory position, grouped by product category.";
+
+  const total = data.reduce((sum, d) => sum + d.count, 0);
+  if (total === 0) {
+    return { summary, insight: "No inventory positions found yet." };
+  }
+
+  const top = data.reduce((a, b) => (b.count > a.count ? b : a));
+  const topPercent = (top.count / total) * 100;
+  const topLabel = top.category.replace(/_/g, " ");
+
+  return {
+    summary,
+    insight: `${topLabel} has the most positions (${top.count} of ${total}, ${topPercent.toFixed(0)}%), across ${data.length} categor${data.length === 1 ? "y" : "ies"} total.`,
+  };
+}

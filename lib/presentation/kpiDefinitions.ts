@@ -14,6 +14,15 @@ export interface KpiInfoContent {
   howCalculated: string;
   idealRange: string;
   howToImprove: string[];
+  /**
+   * Optional — the concrete operational consequence of leaving this metric
+   * unaddressed (Phase 5, Inventory Intelligence). Omitted by the original
+   * six Dashboard KPI definitions below (their popovers render unchanged
+   * without it — see KpiInfoPopover); every new Inventory KPI definition
+   * includes it, since "what happens if I ignore it" is one of the five
+   * questions the Inventory page is required to answer.
+   */
+  whatIfIgnored?: string;
 }
 
 export const KPI_DEFINITIONS = {
@@ -101,6 +110,51 @@ export const KPI_DEFINITIONS = {
       "Mark orders RECEIVED promptly once delivered, so this count doesn't overstate current risk.",
     ],
   },
+  totalPositions: {
+    definition: "The total number of product-warehouse inventory positions currently in view — one position per product per warehouse it's stocked in.",
+    whyItMatters: "It's the scale of the picture everything else on this page describes — the denominator behind every critical/overstocked count and percentage.",
+    howCalculated: "A live count of Inventory rows matching the current filters.",
+    idealRange: "No ideal range — this is a scale measure, not a health measure.",
+    howToImprove: [
+      "Not directly actionable — use the Critical, Overstocked, and Health KPIs alongside this one to judge whether the count reflects a healthy or at-risk catalog.",
+    ],
+    whatIfIgnored: "N/A — this KPI describes scope, not risk, so there's nothing to act on directly.",
+  },
+  criticalInventoryPositions: {
+    definition: "The number of positions where on-hand stock has fallen at or below the reorder point.",
+    whyItMatters: "Each one is an active stockout risk — the product may run out before the next replenishment arrives.",
+    howCalculated: "A live count of Inventory rows with stockStatus = CRITICAL (onHandQty ≤ reorderPoint), recomputed on every recalculation.",
+    idealRange: "Zero is the target — any count above zero is a live stockout risk worth reviewing today.",
+    howToImprove: [
+      "Open each critical position's product detail page and check the Risk Explanation for the exact shortfall.",
+      "Prioritize by lead time — a long-lead-time supplier needs a decision sooner than a short one.",
+      "Cross-check the Procurement page for an EOQ suggestion already covering the same product.",
+    ],
+    whatIfIgnored: "The product runs out before restock arrives — lost sales (or halted operations, for non-resale inventory) until the next delivery lands.",
+  },
+  overstockedInventoryPositions: {
+    definition: "The number of positions where on-hand stock exceeds 4x the reorder point.",
+    whyItMatters: "Excess stock ties up working capital and warehouse space that could otherwise fund or hold faster-moving inventory.",
+    howCalculated: "A live count of Inventory rows with stockStatus = OVERSTOCKED (onHandQty > 4 × reorderPoint), recomputed on every recalculation.",
+    idealRange: "Zero is ideal, but unlike stockouts this is a capital-efficiency concern, not an urgent operational risk — a small steady count is common.",
+    howToImprove: [
+      "Pause or reduce standing purchase orders for consistently overstocked SKUs.",
+      "Check whether the product's reorder point itself is outdated — falling demand can make a once-correct reorder point too generous over time.",
+      "Consider a promotion or transfer to a warehouse with tighter supply, where sensible.",
+    ],
+    whatIfIgnored: "Capital and warehouse space stay locked in slow-moving stock instead of funding inventory that actually needs it.",
+  },
+  totalInventoryValue: {
+    definition: "The total value of all on-hand inventory currently in view, at unit cost.",
+    whyItMatters: "It's the working capital currently tied up on the shelf — the financial size of the operational picture this page describes.",
+    howCalculated: "Sum of onHandQty × unitCost across every Inventory row matching the current filters.",
+    idealRange: "No universal ideal range — read alongside Inventory Turnover to judge whether this value is being put to work or sitting idle.",
+    howToImprove: [
+      "Not directly actionable on its own — use the Critical and Overstocked KPIs to see which positions are driving this figure up or down.",
+      "A high value concentrated in overstocked positions is the clearest sign of capital that could be freed up.",
+    ],
+    whatIfIgnored: "N/A — this KPI is a scale measure; the Overstocked KPI is where a genuinely actionable risk would show up.",
+  },
 } satisfies Record<string, KpiInfoContent>;
 
 export type KpiDefinitionKey = keyof typeof KPI_DEFINITIONS;
@@ -138,6 +192,18 @@ export function kpiCurrentInterpretation(key: KpiDefinitionKey, value: number | 
       return value === 0
         ? "No purchase orders are currently overdue."
         : `${Math.round(value)} purchase order${value === 1 ? " is" : "s are"} currently overdue.`;
+    case "totalPositions":
+      return `${Math.round(value)} inventory position${value === 1 ? "" : "s"} in the current view.`;
+    case "criticalInventoryPositions":
+      return value === 0
+        ? "No positions are currently critical."
+        : `${Math.round(value)} position${value === 1 ? " is" : "s are"} critically low right now.`;
+    case "overstockedInventoryPositions":
+      return value === 0
+        ? "No positions are currently overstocked."
+        : `${Math.round(value)} position${value === 1 ? " is" : "s are"} overstocked right now.`;
+    case "totalInventoryValue":
+      return `Currently ₹${Math.round(value).toLocaleString("en-IN")} in on-hand inventory value.`;
     default:
       return "";
   }

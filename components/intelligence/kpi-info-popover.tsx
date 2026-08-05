@@ -69,6 +69,12 @@ export function KpiInfoPopover({
                 </ul>
               </dd>
             </div>
+            {content.whatIfIgnored && (
+              <div>
+                <dt className="text-label uppercase text-muted-foreground">What happens if ignored</dt>
+                <dd className="mt-0.5 text-foreground">{content.whatIfIgnored}</dd>
+              </div>
+            )}
           </dl>
         </div>
       </PopoverContent>

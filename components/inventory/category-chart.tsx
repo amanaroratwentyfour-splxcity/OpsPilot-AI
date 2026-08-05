@@ -1,6 +1,6 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   CHART_AXIS_LINE_STROKE,
@@ -21,7 +21,7 @@ export function CategoryChart({ data }: { data: { category: string; count: numbe
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 20, right: 8, left: -16, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} strokeOpacity={0.5} />
             <XAxis
               dataKey="category"
@@ -40,7 +40,10 @@ export function CategoryChart({ data }: { data: { category: string; count: numbe
               allowDecimals={false}
             />
             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} labelStyle={CHART_TOOLTIP_LABEL_STYLE} cursor={{ fill: "hsl(var(--muted))" }} />
-            <Bar dataKey="count" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+            <Bar dataKey="count" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} isAnimationActive={false}>
+              {/* DESIGN_SPECIFICATION.md §9.1 — direct value labels so exact counts don't require a tooltip hover. */}
+              <LabelList dataKey="count" position="top" style={{ fill: CHART_AXIS_TICK_FILL, fontSize: 11 }} />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

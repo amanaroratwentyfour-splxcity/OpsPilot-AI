@@ -1,24 +1,10 @@
 "use client";
 
-import { RefreshCw, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { GenerateInsightsButtonView } from "@/components/intelligence/generate-insights-button";
 import { useDashboardInsights } from "./dashboard-insights-context";
 
-/** Mirrors Operations Copilot's "Generate AI Insights" button pattern exactly, for the same optional, on-demand AI enrichment. */
+/** Thin dashboard-context wrapper around the shared button view — see components/intelligence/generate-insights-button.tsx. */
 export function GenerateInsightsButton() {
   const { status, message, generate } = useDashboardInsights();
-
-  return (
-    <div className="flex flex-wrap items-center gap-3">
-      {message && <span className="max-w-xs text-caption text-muted-foreground">{message}</span>}
-      <Button size="sm" variant="outline" disabled={status === "running"} onClick={generate}>
-        {status === "running" ? (
-          <RefreshCw className="mr-2 h-3.5 w-3.5 animate-spin" />
-        ) : (
-          <Sparkles className="mr-2 h-3.5 w-3.5" />
-        )}
-        {status === "running" ? "Generating…" : "Generate AI Insights"}
-      </Button>
-    </div>
-  );
+  return <GenerateInsightsButtonView status={status} message={message} onGenerate={generate} />;
 }
