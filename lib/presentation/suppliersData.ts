@@ -67,6 +67,18 @@ export async function getSupplierDetail(supplierId: string) {
 
   if (!supplier) return null;
 
+  const now = new Date();
+  const overduePurchaseOrderCount = supplier.purchaseOrders.filter(
+    (order) => order.status === PurchaseOrderStatus.IN_TRANSIT && order.expectedDeliveryDate !== null && order.expectedDeliveryDate < now,
+  ).length;
+
+  // Reuses the existing Product.primarySupplier relation and Inventory.stockStatus
+  // field (both already in the schema) to surface which of this supplier's
+  // products are currently at risk — a plain count, no new calculation.
+  const atRiskProductCount = await prisma.product.count({
+    where: { primarySupplierId: supplierId, inventory: { some: { stockStatus: { in: ["CRITICAL", "LOW"] } } } },
+  });
+
   const receivedOrders = supplier.purchaseOrders
     .filter(
       (order): order is typeof order & { expectedDeliveryDate: Date; actualDeliveryDate: Date } =>
@@ -106,6 +118,8 @@ export async function getSupplierDetail(supplierId: string) {
       paymentTerms: supplier.paymentTerms,
     },
     metrics,
+    overduePurchaseOrderCount,
+    atRiskProductCount,
     recentOrders: supplier.purchaseOrders.slice(0, 15).map((order) => ({
       id: order.id,
       status: order.status,
