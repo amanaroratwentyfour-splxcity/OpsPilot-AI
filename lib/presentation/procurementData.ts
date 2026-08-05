@@ -31,7 +31,13 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
       primarySupplier: { select: { id: true, name: true } },
       demandHistory: { orderBy: { periodDate: "asc" }, select: { quantitySold: true } },
       inventory: {
-        select: { onHandQty: true, stockStatus: true, warehouse: { select: { id: true, name: true } } },
+        select: {
+          onHandQty: true,
+          stockStatus: true,
+          reorderPoint: true,
+          safetyStock: true,
+          warehouse: { select: { id: true, name: true } },
+        },
       },
     },
     orderBy: { sku: "asc" },
@@ -42,8 +48,9 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
     const eoq = computeEOQ(annualDemand, product.unitCost);
     // The specific warehouse(s) actually driving the CRITICAL/LOW flag —
     // used to default "Create PO"'s warehouse picker to a relevant one
-    // instead of an arbitrary first warehouse in the system.
-    const flaggedWarehouse = product.inventory.find((inv) => inv.stockStatus === "CRITICAL" || inv.stockStatus === "LOW")?.warehouse;
+    // instead of an arbitrary first warehouse in the system, and to explain
+    // the EOQ suggestion (explainEOQRecommendation) with real numbers.
+    const flaggedPosition = product.inventory.find((inv) => inv.stockStatus === "CRITICAL" || inv.stockStatus === "LOW");
     return {
       productId: product.id,
       sku: product.sku,
@@ -54,8 +61,11 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
       currentOnHand: product.inventory.reduce((sum, inv) => sum + inv.onHandQty, 0),
       primarySupplierId: product.primarySupplier?.id ?? null,
       primarySupplierName: product.primarySupplier?.name ?? null,
-      flaggedWarehouseId: flaggedWarehouse?.id ?? null,
-      flaggedWarehouseName: flaggedWarehouse?.name ?? null,
+      flaggedWarehouseId: flaggedPosition?.warehouse.id ?? null,
+      flaggedWarehouseName: flaggedPosition?.warehouse.name ?? null,
+      flaggedStockStatus: flaggedPosition?.stockStatus ?? null,
+      flaggedReorderPoint: flaggedPosition?.reorderPoint ?? null,
+      flaggedSafetyStock: flaggedPosition?.safetyStock ?? null,
     };
   });
 
@@ -68,7 +78,7 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
     warehouseId: filters.warehouseId,
   };
 
-  const [totalPurchaseOrders, purchaseOrders, statusGroups, overdueCount] = await Promise.all([
+  const [totalPurchaseOrders, purchaseOrders, statusGroups, overdueCount, procurementRisks] = await Promise.all([
     prisma.purchaseOrder.count({ where: poWhere }),
     prisma.purchaseOrder.findMany({
       where: poWhere,
@@ -96,7 +106,28 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
     prisma.purchaseOrder.count({
       where: { status: "IN_TRANSIT", expectedDeliveryDate: { lt: new Date() } },
     }),
+    // Reuses the already-persisted Overdue Purchase Order recommendations
+    // (lib/domain/recommendations/overduePurchaseOrders.ts) as the source
+    // of "which suppliers/warehouses are at risk" for the AI insight input
+    // and deterministic summary — no new risk-detection logic.
+    prisma.aIRecommendation.findMany({
+      where: { category: "PROCUREMENT", status: "ACTIVE" },
+      select: {
+        severity: true,
+        metricJustification: true,
+        supplier: { select: { name: true } },
+        warehouse: { select: { name: true } },
+      },
+      orderBy: [{ severity: "asc" }],
+    }),
   ]);
+
+  const riskRecommendations = procurementRisks.map((r) => ({
+    severity: r.severity as string,
+    justification: r.metricJustification,
+    supplierName: r.supplier?.name ?? null,
+    warehouseName: r.warehouse?.name ?? null,
+  }));
 
   const purchaseOrderItems = purchaseOrders.map((po) => ({
     id: po.id,
@@ -134,5 +165,6 @@ export async function getProcurementOverview(filters: ProcurementFilters = {}) {
       overduePurchaseOrders: overdueCount,
       flaggedProducts: eoqRecommendations.length,
     },
+    riskRecommendations,
   };
 }

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/empty-state";
 import { CreatePODialog } from "./create-po-dialog";
+import { RecommendationWhyPopover } from "@/components/intelligence/recommendation-why-popover";
+import { explainEOQRecommendation } from "@/lib/presentation/procurementInsights";
 import { formatNumber } from "@/lib/format";
 import { PackageCheck } from "lucide-react";
 import type { getProcurementOverview } from "@/lib/presentation/procurementData";
@@ -52,7 +54,20 @@ export function EOQTable({
             <TableCell className="text-right">{formatNumber(item.annualDemand)}</TableCell>
             <TableCell className="text-right font-semibold">{formatNumber(item.eoq)}</TableCell>
             <TableCell className="text-right">
-              <CreatePODialog item={item} suppliers={suppliers} warehouses={warehouses} />
+              <div className="flex items-center justify-end gap-1">
+                <RecommendationWhyPopover
+                  explanation={explainEOQRecommendation({
+                    stockStatus: item.flaggedStockStatus,
+                    currentOnHand: item.currentOnHand,
+                    reorderPoint: item.flaggedReorderPoint,
+                    safetyStock: item.flaggedSafetyStock,
+                    annualDemand: item.annualDemand,
+                    eoq: item.eoq,
+                    warehouseName: item.flaggedWarehouseName,
+                  })}
+                />
+                <CreatePODialog item={item} suppliers={suppliers} warehouses={warehouses} />
+              </div>
             </TableCell>
           </TableRow>
         ))}

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { PurchaseOrderStatusBadge } from "@/components/badges";
 import { EmptyState } from "@/components/empty-state";
+import { explainPurchaseOrder } from "@/lib/presentation/procurementInsights";
 import { formatCurrency, formatDate, formatNumber } from "@/lib/format";
 import { FileText } from "lucide-react";
 import type { getProcurementOverview } from "@/lib/presentation/procurementData";
@@ -87,6 +88,28 @@ export function PurchaseOrderTable({ purchaseOrders }: { purchaseOrders: Purchas
                     </div>
                   )}
                 </div>
+
+                {(() => {
+                  const explanation = explainPurchaseOrder(selected);
+                  return (
+                    <div className="rounded-lg border p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className="text-xs font-medium text-muted-foreground">Why This Matters</p>
+                        <span className="text-xs font-medium">Priority: {explanation.suggestedPriority}</span>
+                      </div>
+                      <dl className="space-y-2 text-xs">
+                        <div>
+                          <dt className="text-muted-foreground">Why it matters</dt>
+                          <dd className="mt-0.5 text-foreground">{explanation.whyItMatters}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Risk if delayed</dt>
+                          <dd className="mt-0.5 text-foreground">{explanation.riskIfDelayed}</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  );
+                })()}
 
                 <div>
                   <p className="mb-2 text-xs font-medium text-muted-foreground">Line Items</p>

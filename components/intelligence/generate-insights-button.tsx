@@ -18,10 +18,15 @@ export function GenerateInsightsButtonView({
   status,
   message,
   onGenerate,
+  label = "Generate AI Insights",
+  loadingLabel = "Generating…",
 }: {
   status: InsightsStatus;
   message: string | null;
   onGenerate: () => void;
+  /** Optional label overrides so other pages (e.g. Procurement) can reuse this exact button with page-specific wording. */
+  label?: string;
+  loadingLabel?: string;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -32,7 +37,7 @@ export function GenerateInsightsButtonView({
         ) : (
           <Sparkles className="mr-2 h-3.5 w-3.5" />
         )}
-        {status === "running" ? "Generating…" : "Generate AI Insights"}
+        {status === "running" ? loadingLabel : label}
       </Button>
     </div>
   );
