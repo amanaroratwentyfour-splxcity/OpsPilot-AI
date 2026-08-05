@@ -4,7 +4,6 @@ const MODEL = "claude-opus-5";
 const MAX_TOKENS = 700;
 
 export interface DashboardInsightInput {
-  companyName: string;
   operationsHealthScore: number | null;
   healthComponents: { label: string; value: number | null }[];
   warehouseUtilizations: { name: string; utilizationPercent: number | null }[];
@@ -50,7 +49,7 @@ export function buildDashboardInsightPrompt(input: DashboardInsightInput): strin
     .map((w) => `- ${w.name}: ${w.utilizationPercent === null ? "not available" : `${Math.round(w.utilizationPercent)}%`}`)
     .join("\n");
 
-  return `You are an operations analyst writing short, plain-English suggestions for an executive operations dashboard belonging to "${input.companyName}".
+  return `You are an operations analyst writing short, plain-English suggestions for an executive operations dashboard. The dashboard is company-agnostic — you don't know and must not guess which company or industry this data belongs to.
 
 Operations Health Score: ${input.operationsHealthScore === null ? "not available" : Math.round(input.operationsHealthScore)}/100
 Health score components:
@@ -66,7 +65,7 @@ Write three short, distinct suggestions (1-2 sentences each), using ONLY the fac
 2. "stockChartRecommendation": an action management should consider about the inventory status mix.
 3. "healthScoreSuggestion": the single most useful lever to raise the Operations Health Score, based on which component above is weakest.
 
-Rules: never mention FMCG, dairy, groceries, or any specific industry — this dashboard is used by companies across many industries, and you don't know which one this is beyond its name. Never mention "NovaFoods". Respond with ONLY a valid JSON object with exactly these three keys and string values, no markdown, no preamble: {"warehouseChartRecommendation": "...", "stockChartRecommendation": "...", "healthScoreSuggestion": "..."}`;
+Rules: never mention FMCG, dairy, groceries, or any specific industry, and never mention or invent any company name — this dashboard is used by companies across many industries and must read as fully generic. Respond with ONLY a valid JSON object with exactly these three keys and string values, no markdown, no preamble: {"warehouseChartRecommendation": "...", "stockChartRecommendation": "...", "healthScoreSuggestion": "..."}`;
 }
 
 /**

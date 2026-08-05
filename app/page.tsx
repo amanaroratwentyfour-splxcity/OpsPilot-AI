@@ -34,7 +34,6 @@ export default async function DashboardPage() {
   const stockInsight = buildStockStatusInsight(summary.stockStatusCounts);
 
   const aiRequestPayload = {
-    companyName: summary.companyName,
     operationsHealthScore: summary.operationsHealthScore,
     healthComponents: listHealthScoreComponents(summary.operationsHealthComponents).map((c) => ({
       label: c.label,
@@ -50,7 +49,7 @@ export default async function DashboardPage() {
   return (
     <DashboardInsightsProvider requestPayload={aiRequestPayload}>
       <div className="space-y-6">
-        <CompanyBrandHeader companyName={summary.companyName} />
+        <CompanyBrandHeader />
 
         <ExecutiveBrief sections={summary.brief} />
 

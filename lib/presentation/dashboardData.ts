@@ -2,7 +2,6 @@ import { prisma } from "@/lib/db/prisma";
 import { getCompanyAnalyticsSnapshot } from "@/lib/domain/analytics/recalculate";
 import { LOW_RELIABILITY_THRESHOLD, WAREHOUSE_UTILIZATION_THRESHOLDS } from "@/lib/domain/config";
 import { buildExecutiveBrief } from "./executiveBrief";
-import { deriveCompanyName } from "./companyIdentity";
 import type { RecommendationEntityType } from "./recommendationExplain";
 
 const SEVERITY_ORDER = { CRITICAL: 0, WARNING: 1, INFO: 2 } as const;
@@ -47,8 +46,6 @@ export async function getDashboardSummary() {
         take: 50,
       }),
     ]);
-
-  const companyName = deriveCompanyName(warehouses.map((w) => w.name));
 
   const warehouseNameById = new Map(warehouses.map((w) => [w.id, w.name]));
   const warehouseUtilizations = snapshot.warehouseUtilizations.map((w) => ({
@@ -119,7 +116,6 @@ export async function getDashboardSummary() {
   });
 
   return {
-    companyName,
     brief,
     operationsHealthScore: snapshot.operationsHealthScore,
     operationsHealthComponents: snapshot.operationsHealthComponents,

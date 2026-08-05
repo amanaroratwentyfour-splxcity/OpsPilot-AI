@@ -21,12 +21,11 @@ import {
 export const POST = withRouteErrorHandling(async (request: NextRequest) => {
   const body = await request.json().catch(() => null);
 
-  if (!body || typeof body.companyName !== "string") {
-    throw new ApiError("companyName is required", 400);
+  if (!body) {
+    throw new ApiError("Request body is required", 400);
   }
 
   const input: DashboardInsightInput = {
-    companyName: body.companyName,
     operationsHealthScore: typeof body.operationsHealthScore === "number" ? body.operationsHealthScore : null,
     healthComponents: Array.isArray(body.healthComponents) ? body.healthComponents : [],
     warehouseUtilizations: Array.isArray(body.warehouseUtilizations) ? body.warehouseUtilizations : [],
