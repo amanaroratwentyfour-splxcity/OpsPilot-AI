@@ -2,6 +2,14 @@
 
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CHART_AXIS_LINE_STROKE,
+  CHART_AXIS_TICK_FILL,
+  CHART_COLORS,
+  CHART_GRID_STROKE,
+  CHART_TOOLTIP_LABEL_STYLE,
+  CHART_TOOLTIP_STYLE,
+} from "@/lib/chart-theme";
 
 export function ParetoChart({
   data,
@@ -17,18 +25,47 @@ export function ParetoChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">ABC Pareto Curve (top 40 SKUs by usage value)</CardTitle>
+        <CardTitle>ABC Pareto Curve (top 40 SKUs by usage value)</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-            <XAxis dataKey="sku" tick={{ fontSize: 9 }} interval={3} angle={-45} textAnchor="end" height={60} />
-            <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
-            <YAxis yAxisId="right" orientation="right" domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
-            <Tooltip />
-            <Bar yAxisId="left" dataKey="Usage Value" fill="#3b82f6" />
-            <Area yAxisId="right" type="monotone" dataKey="Cumulative %" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.1} />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} strokeOpacity={0.5} />
+            <XAxis
+              dataKey="sku"
+              tick={{ fontSize: 9, fill: CHART_AXIS_TICK_FILL }}
+              axisLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              tickLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              interval={3}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis
+              yAxisId="left"
+              tick={{ fontSize: 11, fill: CHART_AXIS_TICK_FILL }}
+              axisLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              tickLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              domain={[0, 100]}
+              tick={{ fontSize: 11, fill: CHART_AXIS_TICK_FILL }}
+              axisLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              tickLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              unit="%"
+            />
+            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} labelStyle={CHART_TOOLTIP_LABEL_STYLE} cursor={{ fill: "hsl(var(--muted))" }} />
+            <Bar yAxisId="left" dataKey="Usage Value" fill={CHART_COLORS[0]} />
+            <Area
+              yAxisId="right"
+              type="monotone"
+              dataKey="Cumulative %"
+              stroke={CHART_COLORS[2]}
+              fill={CHART_COLORS[2]}
+              fillOpacity={0.15}
+            />
           </ComposedChart>
         </ResponsiveContainer>
       </CardContent>

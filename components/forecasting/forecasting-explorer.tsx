@@ -112,7 +112,7 @@ export function ForecastingExplorer({
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Weekly Detail</CardTitle>
+              <CardTitle>Weekly Detail</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>

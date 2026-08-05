@@ -57,13 +57,13 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r bg-muted/30 md:flex md:flex-col">
+    <aside className="hidden w-64 shrink-0 border-r bg-surface md:flex md:flex-col">
       <div className="flex h-16 items-center gap-2 border-b px-6">
         <Sparkles className="h-5 w-5 text-primary" />
-        <span className="font-semibold tracking-tight">OpsPilot AI</span>
+        <span className="text-app-title tracking-tight">OpsPilot AI</span>
       </div>
       <NavLinks />
-      <div className="border-t p-4 text-xs text-muted-foreground">
+      <div className="border-t p-4 text-caption text-muted-foreground">
         NovaFoods Pvt. Ltd.
         <br />
         Operations Decision Hub

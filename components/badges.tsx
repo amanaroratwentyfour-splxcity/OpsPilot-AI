@@ -1,82 +1,100 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const SEVERITY_STYLES: Record<string, string> = {
-  CRITICAL: "bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-900",
-  ERROR: "bg-red-100 text-red-800 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-900",
-  WARNING:
-    "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900",
-  INFO: "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-900",
+/**
+ * DESIGN_SPECIFICATION.md §3.3/§6.9: every status badge in the product maps
+ * to exactly one of four semantic tokens — critical, warning, success, or
+ * primary (the spec's "info") — at ~15% background opacity with full-opacity
+ * text of the same hue. Purely neutral/non-alarming states (DRAFT, DISMISSED,
+ * Class C) use `secondary`, the low-emphasis neutral fill, never a fifth
+ * ad-hoc hue. No component in this file hardcodes a color value.
+ */
+const TONE_STYLES = {
+  critical: "bg-critical/15 text-critical border-critical/30",
+  warning: "bg-warning/15 text-warning border-warning/30",
+  success: "bg-success/15 text-success border-success/30",
+  info: "bg-primary/15 text-primary border-primary/30",
+  neutral: "bg-secondary text-secondary-foreground border-transparent",
+} as const;
+
+type Tone = keyof typeof TONE_STYLES;
+
+const SEVERITY_TONES: Record<string, Tone> = {
+  CRITICAL: "critical",
+  ERROR: "critical",
+  WARNING: "warning",
+  INFO: "info",
 };
 
 export function SeverityBadge({ severity }: { severity: string }) {
   return (
-    <Badge variant="outline" className={cn("font-medium", SEVERITY_STYLES[severity])}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[SEVERITY_TONES[severity]])}>
       {severity}
     </Badge>
   );
 }
 
-const STOCK_STATUS_STYLES: Record<string, string> = {
-  CRITICAL: SEVERITY_STYLES.CRITICAL,
-  LOW: SEVERITY_STYLES.WARNING,
-  HEALTHY:
-    "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900",
-  OVERSTOCKED:
-    "bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-900",
+const STOCK_STATUS_TONES: Record<string, Tone> = {
+  CRITICAL: "critical",
+  LOW: "warning",
+  HEALTHY: "success",
+  // Consolidated onto `warning` per the spec's four-token rule (§3.3) rather
+  // than a fifth ad-hoc hue — overstock is a "needs attention" state, same
+  // family as low stock, just at the other end of the range.
+  OVERSTOCKED: "warning",
 };
 
 export function StockStatusBadge({ status }: { status: string | null }) {
   if (!status) return <span className="text-muted-foreground">—</span>;
   return (
-    <Badge variant="outline" className={cn("font-medium", STOCK_STATUS_STYLES[status])}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[STOCK_STATUS_TONES[status]])}>
       {status}
     </Badge>
   );
 }
 
-const PO_STATUS_STYLES: Record<string, string> = {
-  DRAFT: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-  SUBMITTED: SEVERITY_STYLES.INFO,
-  APPROVED: SEVERITY_STYLES.INFO,
-  IN_TRANSIT: SEVERITY_STYLES.WARNING,
-  RECEIVED: STOCK_STATUS_STYLES.HEALTHY,
-  CANCELLED: SEVERITY_STYLES.CRITICAL,
+const PO_STATUS_TONES: Record<string, Tone> = {
+  DRAFT: "neutral",
+  SUBMITTED: "info",
+  APPROVED: "info",
+  IN_TRANSIT: "warning",
+  RECEIVED: "success",
+  CANCELLED: "critical",
 };
 
 export function PurchaseOrderStatusBadge({ status }: { status: string }) {
   return (
-    <Badge variant="outline" className={cn("font-medium", PO_STATUS_STYLES[status])}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[PO_STATUS_TONES[status]])}>
       {status.replace("_", " ")}
     </Badge>
   );
 }
 
-const ABC_CLASS_STYLES: Record<string, string> = {
-  A: STOCK_STATUS_STYLES.HEALTHY,
-  B: SEVERITY_STYLES.INFO,
-  C: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+const ABC_CLASS_TONES: Record<string, Tone> = {
+  A: "success",
+  B: "info",
+  C: "neutral",
 };
 
 export function ABCClassBadge({ abcClass }: { abcClass: string | null }) {
   if (!abcClass) return <span className="text-muted-foreground">—</span>;
   return (
-    <Badge variant="outline" className={cn("font-medium", ABC_CLASS_STYLES[abcClass])}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[ABC_CLASS_TONES[abcClass]])}>
       Class {abcClass}
     </Badge>
   );
 }
 
-const RECOMMENDATION_STATUS_STYLES: Record<string, string> = {
-  ACTIVE: SEVERITY_STYLES.INFO,
-  ACCEPTED: STOCK_STATUS_STYLES.HEALTHY,
-  DISMISSED: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
-  SNOOZED: SEVERITY_STYLES.WARNING,
+const RECOMMENDATION_STATUS_TONES: Record<string, Tone> = {
+  ACTIVE: "info",
+  ACCEPTED: "success",
+  DISMISSED: "neutral",
+  SNOOZED: "warning",
 };
 
 export function RecommendationStatusBadge({ status }: { status: string }) {
   return (
-    <Badge variant="outline" className={cn("font-medium", RECOMMENDATION_STATUS_STYLES[status])}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[RECOMMENDATION_STATUS_TONES[status]])}>
       {status}
     </Badge>
   );
@@ -85,14 +103,9 @@ export function RecommendationStatusBadge({ status }: { status: string }) {
 /** Color-coded 0-100 score, used for Health Score / Reliability Score / etc. */
 export function ScoreBadge({ score }: { score: number | null }) {
   if (score === null) return <span className="text-muted-foreground">—</span>;
-  const style =
-    score >= 80
-      ? STOCK_STATUS_STYLES.HEALTHY
-      : score >= 60
-        ? SEVERITY_STYLES.WARNING
-        : SEVERITY_STYLES.CRITICAL;
+  const tone: Tone = score >= 80 ? "success" : score >= 60 ? "warning" : "critical";
   return (
-    <Badge variant="outline" className={cn("font-medium", style)}>
+    <Badge variant="outline" className={cn("font-medium", TONE_STYLES[tone])}>
       {Math.round(score)}
     </Badge>
   );

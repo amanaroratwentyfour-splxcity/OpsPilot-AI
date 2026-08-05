@@ -8,59 +8,137 @@
   }
 }
 
+/*
+ * Token values below implement DESIGN_SPECIFICATION.md §3 (Color System).
+ * `:root` holds the light-mode values; `.dark` overrides them. Dark is the
+ * primary experience (§3.1) — app/layout.tsx applies `class="dark"` to
+ * <html> by default, with the light block kept fully valid so light mode
+ * remains a real, working alternate rather than an afterthought.
+ *
+ * `--popover` is reused as the spec's "card-elevated" surface (modals,
+ * popovers, dropdown/select content) rather than introducing a new token
+ * name, since that's exactly the role `popover` already played in the
+ * component library — Dialog/Sheet are updated in this same phase to sit
+ * on `bg-popover` instead of `bg-background` so they actually read as
+ * elevated per §3.5.
+ *
+ * `--accent` keeps its original shadcn role — a neutral hover/focus tint
+ * used throughout Button/DropdownMenu/Select — because that usage is
+ * pervasive and unrelated to AI content. The spec's violet "AI-originated
+ * content" accent (§3.2, §7.5) is a distinct token, `--ai-accent`, applied
+ * only to the product's existing AI-narrative surfaces.
+ */
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 222 47% 11%;
+
+    --surface: 210 20% 98%;
+    --surface-foreground: 222 47% 11%;
+
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
+
+    /* card-elevated per DESIGN_SPECIFICATION.md §3.2 */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --chart-1: 12 76% 61%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 20% 95%;
+    --muted-foreground: 215 16% 47%;
+
+    /* neutral hover/focus tint — not the AI accent, see file header */
+    --accent: 210 20% 95%;
+    --accent-foreground: 222 47% 11%;
+
+    /* AI-originated content marker (§3.2, §7.5) — sparing, never a plain button */
+    --ai-accent: 262 83% 58%;
+    --ai-accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Semantic status colors (§3.3) — fixed meaning, not themeable per se,
+       only re-lightened for dark-surface contrast in .dark below. */
+    --success: 160 84% 32%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 45%;
+    --warning-foreground: 0 0% 100%;
+    --critical: 0 72% 51%;
+    --critical-foreground: 0 0% 100%;
+
+    --border: 214 20% 91%;
+    --border-strong: 214 20% 80%;
+    --input: 214 20% 91%;
+    --ring: 221 83% 53%;
+
+    /* Chart palette (§3.4) — fixed order, used by every non-status chart series */
+    --chart-1: 221 83% 53%;
     --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-3: 27 87% 55%;
+    --chart-4: 280 65% 55%;
+    --chart-5: 340 75% 50%;
+    --chart-6: 197 37% 40%;
+    --chart-7: 142 60% 35%;
+
     --radius: 0.5rem;
   }
+
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 222 47% 6%;
+    --foreground: 210 20% 96%;
+
+    --surface: 222 42% 9%;
+    --surface-foreground: 210 20% 96%;
+
+    --card: 222 40% 11%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 222 38% 14%;
+    --popover-foreground: 210 20% 96%;
+
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217 30% 18%;
+    --secondary-foreground: 210 20% 96%;
+
+    --muted: 217 30% 18%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 217 30% 18%;
+    --accent-foreground: 210 20% 96%;
+
+    --ai-accent: 262 83% 70%;
+    --ai-accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 222 47% 11%;
+
+    --success: 160 70% 45%;
+    --success-foreground: 222 47% 11%;
+    --warning: 38 92% 58%;
+    --warning-foreground: 222 47% 11%;
+    --critical: 0 84% 65%;
+    --critical-foreground: 222 47% 11%;
+
+    --border: 217 25% 20%;
+    --border-strong: 217 25% 30%;
+    --input: 217 25% 20%;
+    --ring: 217 91% 65%;
+
+    --chart-1: 217 91% 65%;
+    --chart-2: 173 58% 50%;
+    --chart-3: 27 87% 65%;
+    --chart-4: 280 65% 68%;
+    --chart-5: 340 75% 62%;
+    --chart-6: 197 37% 55%;
+    --chart-7: 142 55% 48%;
   }
 }
 
@@ -70,5 +148,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* DESIGN_SPECIFICATION.md §11 — reduced motion is a hard requirement, not
+   a nice-to-have: every transition/animation this design system introduces
+   (card hover, dialog/sheet/dropdown enter-exit, skeleton shimmer) collapses
+   to an instant, single-frame change for users who've asked the OS for it. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

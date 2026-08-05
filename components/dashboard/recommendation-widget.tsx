@@ -13,7 +13,7 @@ export function RecommendationWidget({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-medium">Top Recommendations</CardTitle>
+        <CardTitle>Top Recommendations</CardTitle>
         <Link href="/copilot" className="text-xs font-medium text-primary hover:underline">
           View all
         </Link>

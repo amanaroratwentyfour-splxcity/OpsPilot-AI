@@ -88,15 +88,15 @@ export function RecommendationCard({
         {recommendation.aiNarrative && (
           <div className="mt-3">
             <button
-              className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+              className="flex items-center gap-1.5 text-xs font-medium text-ai hover:underline"
               onClick={() => setShowNarrative((v) => !v)}
             >
               <Sparkles className="h-3.5 w-3.5" />
               {showNarrative ? "Hide AI Insight" : "Show AI Insight"}
             </button>
             {showNarrative && (
-              <div className="mt-2 rounded-md border border-primary/20 bg-primary/[0.03] p-3 text-sm">
-                <p className="mb-1 flex items-center gap-1.5 text-xs font-medium text-primary">
+              <div className="mt-2 rounded-md border border-ai/20 bg-ai/[0.06] p-3 text-sm">
+                <p className="mb-1 flex items-center gap-1.5 text-xs font-medium text-ai">
                   <Sparkles className="h-3 w-3" />
                   AI Insight — optional enhancement, not a substitute for the justification above
                 </p>

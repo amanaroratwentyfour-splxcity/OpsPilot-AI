@@ -11,7 +11,7 @@ import type { ValidationReport } from "@/lib/import/validationReport";
 export function ValidationReportTable({ report }: { report: ValidationReport }) {
   if (report.issues.length === 0) {
     return (
-      <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
+      <div className="flex items-center gap-2 rounded-md border border-success/30 bg-success/10 p-4 text-sm text-success">
         <CheckCircle2 className="h-4 w-4 shrink-0" />
         No issues found. This workbook is ready to import.
       </div>
@@ -28,7 +28,7 @@ export function ValidationReportTable({ report }: { report: ValidationReport }) 
           </span>
         )}
         {report.warningCount > 0 && (
-          <span className="flex items-center gap-1.5 font-medium text-amber-600 dark:text-amber-400">
+          <span className="flex items-center gap-1.5 font-medium text-warning">
             <AlertTriangle className="h-4 w-4" />
             {report.warningCount} warning{report.warningCount === 1 ? "" : "s"}
           </span>

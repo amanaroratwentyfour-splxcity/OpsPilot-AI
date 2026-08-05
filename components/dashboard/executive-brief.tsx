@@ -6,7 +6,7 @@ export function ExecutiveBrief({ lines }: { lines: string[] }) {
     <Card className="border-primary/20 bg-primary/[0.03]">
       <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2">
         <ClipboardList className="h-4 w-4 text-primary" />
-        <CardTitle className="text-sm font-semibold">Executive Brief</CardTitle>
+        <CardTitle>Executive Brief</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-1.5 text-sm text-foreground">

@@ -62,7 +62,7 @@ export default async function InventoryDetailPage({ params }: { params: { produc
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Position by Warehouse</CardTitle>
+          <CardTitle>Position by Warehouse</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

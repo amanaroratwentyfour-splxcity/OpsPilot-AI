@@ -73,7 +73,7 @@ export default async function SupplierDetailPage({ params }: { params: { supplie
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm font-medium">Recent Purchase Orders</CardTitle>
+          <CardTitle>Recent Purchase Orders</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

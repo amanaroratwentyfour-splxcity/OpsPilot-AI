@@ -21,12 +21,12 @@ export function MobileNav() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex w-64 flex-col p-0 sm:max-w-xs">
-        <SheetTitle className="flex h-16 items-center gap-2 border-b px-6 text-left">
+        <SheetTitle className="flex h-16 items-center gap-2 border-b px-6 text-left text-app-title tracking-tight">
           <Sparkles className="h-5 w-5 text-primary" />
-          <span className="font-semibold tracking-tight">OpsPilot AI</span>
+          <span>OpsPilot AI</span>
         </SheetTitle>
         <NavLinks onNavigate={() => setOpen(false)} />
-        <div className="border-t p-4 text-xs text-muted-foreground">
+        <div className="border-t p-4 text-caption text-muted-foreground">
           NovaFoods Pvt. Ltd.
           <br />
           Operations Decision Hub

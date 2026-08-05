@@ -31,8 +31,8 @@ const ROWS: { key: keyof ImportedCounts; label: string }[] = [
 /** Shown after a successful POST /api/import-center/import — the dataset has already been replaced and recalculated. */
 export function ImportSummary({ imported, recalculated, durationMs }: ImportSummaryProps) {
   return (
-    <div className="space-y-4 rounded-md border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900 dark:bg-emerald-950">
-      <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+    <div className="space-y-4 rounded-md border border-success/30 bg-success/10 p-4">
+      <div className="flex items-center gap-2 text-success">
         <CheckCircle2 className="h-5 w-5 shrink-0" />
         <span className="font-medium">Dataset imported successfully in {(durationMs / 1000).toFixed(1)}s</span>
       </div>
@@ -47,7 +47,7 @@ export function ImportSummary({ imported, recalculated, durationMs }: ImportSumm
       </dl>
 
       {!recalculated && (
-        <p className="text-sm text-amber-700 dark:text-amber-400">
+        <p className="text-sm text-warning">
           The import succeeded, but recalculating KPIs and recommendations failed. Use &ldquo;Recalculate
           All&rdquo; from any dashboard page to retry.
         </p>

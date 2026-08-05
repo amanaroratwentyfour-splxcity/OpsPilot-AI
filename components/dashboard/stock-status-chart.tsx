@@ -2,12 +2,19 @@
 
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CHART_LEGEND_STYLE,
+  CHART_TOOLTIP_LABEL_STYLE,
+  CHART_TOOLTIP_STYLE,
+  STATUS_CHART_COLORS,
+} from "@/lib/chart-theme";
 
+// Status-carrying chart — maps to the semantic tokens (§10.1), never the categorical palette.
 const COLORS: Record<string, string> = {
-  CRITICAL: "#ef4444",
-  LOW: "#f59e0b",
-  HEALTHY: "#10b981",
-  OVERSTOCKED: "#8b5cf6",
+  CRITICAL: STATUS_CHART_COLORS.critical,
+  LOW: STATUS_CHART_COLORS.warning,
+  HEALTHY: STATUS_CHART_COLORS.success,
+  OVERSTOCKED: STATUS_CHART_COLORS.warning,
 };
 
 export interface StockStatusChartProps {
@@ -22,7 +29,7 @@ export function StockStatusChart({ counts }: StockStatusChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium">Inventory Status Distribution</CardTitle>
+        <CardTitle>Inventory Status Distribution</CardTitle>
       </CardHeader>
       <CardContent>
         {data.length === 0 ? (
@@ -43,8 +50,8 @@ export function StockStatusChart({ counts }: StockStatusChartProps) {
                   <Cell key={entry.name} fill={COLORS[entry.name]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip contentStyle={CHART_TOOLTIP_STYLE} labelStyle={CHART_TOOLTIP_LABEL_STYLE} />
+              <Legend wrapperStyle={CHART_LEGEND_STYLE} />
             </PieChart>
           </ResponsiveContainer>
         )}
