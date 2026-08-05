@@ -27,6 +27,25 @@ const TREND_BADGE_STYLES: Record<Tone, string> = {
 export const KPI_CARD_HOVER_CLASS =
   "transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-lg";
 
+export type AccentTint = "red" | "blue" | "green" | "purple" | "amber" | "lavender";
+
+/**
+ * A ~5% pastel background tint, one fixed hue per Executive Dashboard KPI
+ * card (identity, not status — a card's tint never changes with its
+ * tone/trend). Light mode only, per the KPI polish pass's "preserve dark
+ * mode" requirement: `dark:bg-card` restores the card's normal background
+ * exactly, since Tailwind's `dark:` variant is additive and cn()'s
+ * tailwind-merge only needs to resolve the light-mode class once.
+ */
+export const ACCENT_TINT_CLASS: Record<AccentTint, string> = {
+  red: "bg-red-500/5 dark:bg-card",
+  blue: "bg-blue-500/5 dark:bg-card",
+  green: "bg-green-500/5 dark:bg-card",
+  purple: "bg-purple-500/5 dark:bg-card",
+  amber: "bg-amber-500/5 dark:bg-card",
+  lavender: "bg-violet-500/5 dark:bg-card",
+};
+
 export interface KpiTrend {
   label: string;
   tone?: Tone;
@@ -56,10 +75,12 @@ export function DashboardKpiCard({
   tone = "neutral",
   trend,
   info,
+  accentTint,
 }: {
   label: string;
   value: string;
   subtitle?: string;
+  /** Optional — Inventory's cards (which reuse this component) still pass this; the Executive Dashboard's own call sites omit it per the KPI polish pass, so no icon renders there. */
   icon?: LucideIcon;
   tone?: Tone;
   /**
@@ -71,9 +92,11 @@ export function DashboardKpiCard({
    */
   trend?: KpiTrend;
   info?: KpiInfo;
+  /** Optional — renders a fixed pastel background tint (light mode only) when supplied. Omitted call sites are visually unaffected. */
+  accentTint?: AccentTint;
 }) {
   return (
-    <Card className={KPI_CARD_HOVER_CLASS}>
+    <Card className={cn(KPI_CARD_HOVER_CLASS, accentTint && ACCENT_TINT_CLASS[accentTint])}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
           <CardTitle className="text-label uppercase text-muted-foreground">{label}</CardTitle>

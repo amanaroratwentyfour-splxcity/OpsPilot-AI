@@ -25,7 +25,7 @@ export function ParetoCurveInfoPopover() {
           <p className="text-section-title leading-snug">Pareto Curve</p>
           <p className="text-sm text-foreground">
             A chart combining each SKU&apos;s usage value (bars) with the running cumulative share of total usage
-            value (line) — the same ranking behind ABC Classification, shown visually.
+            value (line), the same ranking behind ABC Classification, shown visually.
           </p>
           <p className="text-sm text-foreground">
             It illustrates the 80/20 principle: typically a small share of products (Class A) account for roughly

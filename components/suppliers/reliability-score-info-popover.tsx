@@ -41,7 +41,7 @@ export function ReliabilityScoreInfoPopover() {
           </dl>
           <p className="text-xs text-muted-foreground">
             A score below the threshold means orders with this supplier carry elevated risk of late or inconsistent
-            delivery — worth reviewing before placing new orders.
+            delivery, worth reviewing before placing new orders.
           </p>
         </div>
       </PopoverContent>

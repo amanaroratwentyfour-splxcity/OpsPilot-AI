@@ -35,7 +35,7 @@ export function buildWarehouseUtilizationInsight(
   if (atOrAboveCritical.length > 0) {
     return {
       summary,
-      insight: `${atOrAboveCritical.map((w) => w.warehouseName).join(", ")} ${atOrAboveCritical.length === 1 ? "is" : "are"} at or above ${criticalThreshold}% utilization — critically low headroom for incoming stock.`,
+      insight: `${atOrAboveCritical.map((w) => w.warehouseName).join(", ")} ${atOrAboveCritical.length === 1 ? "is" : "are"} at or above ${criticalThreshold}% utilization, critically low headroom for incoming stock.`,
     };
   }
   if (atOrAboveWarning.length > 0) {

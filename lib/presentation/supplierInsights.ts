@@ -23,7 +23,7 @@ export function buildSupplierReliabilityInsight(
   const summary = `${kpis.totalSuppliers} supplier(s) tracked, ${scoredCount} scored, average reliability ${kpis.averageReliability !== null ? formatNumber(kpis.averageReliability) : "—"}/100.`;
 
   if (kpis.belowThreshold === 0) {
-    return { summary, insight: "All scored suppliers are at or above the reliability threshold — no immediate supplier risk flags." };
+    return { summary, insight: "All scored suppliers are at or above the reliability threshold, no immediate supplier risk flags." };
   }
 
   const scored = distribution.filter((d): d is { name: string; score: number } => d.score !== null);
@@ -43,7 +43,7 @@ export interface SupplierSummary {
   suggestedAction: string;
 }
 
-const NO_TREND_TEXT = "No historical trend is tracked — this score reflects a single point-in-time calculation, not a change over time.";
+const NO_TREND_TEXT = "No historical trend is tracked. This score reflects a single point-in-time calculation, not a change over time.";
 
 export function buildSupplierSummary(
   metrics: SupplierMetrics,
@@ -61,7 +61,7 @@ export function buildSupplierSummary(
 
   if (metrics.reliabilityScore === null) {
     return {
-      overallPerformance: `Not enough delivery history yet — only ${metrics.sampleSize} received order(s) recorded, below the ${MIN_ORDERS_FOR_RELIABILITY_SCORE} needed for a reliability score.`,
+      overallPerformance: `Not enough delivery history yet, only ${metrics.sampleSize} received order(s) recorded, below the ${MIN_ORDERS_FOR_RELIABILITY_SCORE} needed for a reliability score.`,
       reliabilityTrend: NO_TREND_TEXT,
       procurementRisk,
       operationalImpact,
@@ -84,6 +84,6 @@ export function buildSupplierSummary(
     operationalImpact,
     suggestedAction: flagged
       ? `Review ${weakest.label} (currently ${formatNumber(weakest.value)}/100), the weakest contributing factor, before placing new orders with this supplier.`
-      : "No immediate action needed — performance is within a healthy range.",
+      : "No immediate action needed. Performance is within a healthy range.",
   };
 }

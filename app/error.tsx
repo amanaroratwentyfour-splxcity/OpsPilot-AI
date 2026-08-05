@@ -14,7 +14,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       <AlertTriangle className="h-10 w-10 text-destructive" />
       <h2 className="text-lg font-semibold">Something went wrong</h2>
       <p className="max-w-md text-sm text-muted-foreground">
-        This page couldn&apos;t load its data. This is usually temporary — try again, or head back to the
+        This page couldn&apos;t load its data. This is usually temporary. Try again, or head back to the
         dashboard.
       </p>
       <div className="mt-2 flex gap-3">

@@ -191,7 +191,7 @@ export default async function InventoryDetailPage({ params }: { params: { produc
         <CardContent>
           {activeRecommendations.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No active recommendations for this product right now — nothing to explain.
+              No active recommendations for this product right now, nothing to explain.
             </p>
           ) : activeRecommendations.every((r) => !r.aiNarrative) ? (
             <p className="text-sm text-muted-foreground">

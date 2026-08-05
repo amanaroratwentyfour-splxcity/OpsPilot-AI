@@ -38,7 +38,7 @@ export default function ImportCenterPage() {
           </div>
           <CardDescription>
             Upload a filled-in workbook to check it for structural, business-rule, and cross-sheet
-            relationship problems. Every issue is reported with its exact sheet, row, and column — nothing is
+            relationship problems. Every issue is reported with its exact sheet, row, and column. Nothing is
             written to the database at this stage.
           </CardDescription>
         </CardHeader>

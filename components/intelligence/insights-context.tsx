@@ -12,8 +12,8 @@ export interface InsightsContextValue<TResult> {
 }
 
 const UNAVAILABLE_MESSAGE =
-  "AI insights are unavailable right now — this usually means Claude isn't configured. The static analysis above still reflects the full picture.";
-const ERROR_MESSAGE = "AI insights are unavailable right now — the static analysis above still reflects the full picture.";
+  "AI insights are unavailable right now. This usually means Claude isn't configured. The static analysis above still reflects the full picture.";
+const ERROR_MESSAGE = "AI insights are unavailable right now. The static analysis above still reflects the full picture.";
 
 /**
  * Shared factory behind every page's "Generate AI Insights" trigger

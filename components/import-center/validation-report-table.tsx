@@ -36,7 +36,7 @@ export function ValidationReportTable({ report }: { report: ValidationReport }) 
         <span className="text-muted-foreground">
           {report.blocked
             ? "This workbook cannot be imported until every error above is fixed."
-            : "No blocking errors — this workbook is ready to import."}
+            : "No blocking errors. This workbook is ready to import."}
         </span>
       </div>
 

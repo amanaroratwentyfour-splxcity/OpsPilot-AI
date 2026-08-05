@@ -48,12 +48,12 @@ export function CopilotExplorer({ initialItems }: { initialItems: Overview["item
       } else {
         setNarrateStatus("unavailable");
         setNarrateMessage(
-          "No new AI insights were generated. This usually means Claude is not configured (ANTHROPIC_API_KEY), or every eligible recommendation already has one — recommendations work fully either way.",
+          "No new AI insights were generated. This usually means Claude is not configured (ANTHROPIC_API_KEY), or every eligible recommendation already has one. Recommendations work fully either way.",
         );
       }
     } catch {
       setNarrateStatus("unavailable");
-      setNarrateMessage("AI insight generation is unavailable right now — recommendations still work normally.");
+      setNarrateMessage("AI insight generation is unavailable right now. Recommendations still work normally.");
     }
   }
 

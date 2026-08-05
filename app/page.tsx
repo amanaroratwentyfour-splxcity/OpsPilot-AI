@@ -1,4 +1,3 @@
-import { RefreshCw, ShieldCheck, Sparkles, AlertTriangle, Target } from "lucide-react";
 import { DashboardKpiCard } from "@/components/dashboard/dashboard-kpi-card";
 import { CompanyBrandHeader } from "@/components/dashboard/company-brand-header";
 import { ExecutiveBrief } from "@/components/dashboard/executive-brief";
@@ -59,8 +58,8 @@ export default async function DashboardPage() {
             label="Inventory Turnover"
             value={summary.inventoryTurnover !== null ? `${summary.inventoryTurnover.toFixed(1)}x` : "—"}
             subtitle="annualized"
-            icon={RefreshCw}
             tone={turnoverTone}
+            accentTint="blue"
             trend={{
               label: turnoverTone === "good" ? "Healthy" : turnoverTone === "warning" ? "Monitor" : "No data",
               tone: turnoverTone,
@@ -75,8 +74,8 @@ export default async function DashboardPage() {
             label="Avg Supplier Reliability"
             value={formatNumber(summary.supplierReliability.average)}
             subtitle={`${summary.supplierReliability.belowThresholdCount} below threshold`}
-            icon={ShieldCheck}
             tone={reliabilityTone}
+            accentTint="green"
             trend={{
               label: reliabilityTone === "good" ? "Healthy" : "Monitor",
               tone: reliabilityTone,
@@ -97,8 +96,8 @@ export default async function DashboardPage() {
             label="Active Recommendations"
             value={formatNumber(summary.recommendationCounts.total)}
             subtitle={`${summary.recommendationCounts.CRITICAL} critical, ${summary.recommendationCounts.WARNING} warning`}
-            icon={Sparkles}
             tone={recommendationsTone}
+            accentTint="purple"
             trend={{
               label: recommendationsTone === "critical" ? "Critical" : "Healthy",
               tone: recommendationsTone,
@@ -115,8 +114,8 @@ export default async function DashboardPage() {
           <DashboardKpiCard
             label="Overdue Purchase Orders"
             value={formatNumber(summary.overduePurchaseOrderCount)}
-            icon={AlertTriangle}
             tone={summary.overduePurchaseOrderCount > 0 ? "warning" : "good"}
+            accentTint="amber"
             trend={{
               label: summary.overduePurchaseOrderCount > 0 ? "Monitor" : "Healthy",
               tone: summary.overduePurchaseOrderCount > 0 ? "warning" : "good",
@@ -134,7 +133,7 @@ export default async function DashboardPage() {
             label="Forecast Accuracy"
             value={formatPercent(summary.operationsHealthComponents.avgForecastAccuracy)}
             subtitle="100 − avg MAPE"
-            icon={Target}
+            accentTint="lavender"
             info={{
               label: "Forecast Accuracy",
               content: KPI_DEFINITIONS.forecastAccuracy,

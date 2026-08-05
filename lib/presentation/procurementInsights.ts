@@ -19,7 +19,7 @@ export function buildProcurementInsight(
   const summary = `${kpis.openPurchaseOrders} open purchase order(s), ${kpis.overduePurchaseOrders} overdue, ${kpis.flaggedProducts} product(s) flagged for reorder.`;
 
   if (riskRecommendations.length === 0) {
-    return { summary, insight: "No purchase orders are currently overdue — procurement is on track." };
+    return { summary, insight: "No purchase orders are currently overdue. Procurement is on track." };
   }
 
   const critical = riskRecommendations.filter((r) => r.severity === "CRITICAL");
@@ -70,7 +70,7 @@ export function explainPurchaseOrder(po: {
 
   if (po.status === "IN_TRANSIT") {
     return {
-      whyItMatters: "In transit and on schedule — the expected delivery date has not yet passed.",
+      whyItMatters: "In transit and on schedule. The expected delivery date has not yet passed.",
       riskIfDelayed: "No delivery risk detected at this time.",
       expectedImpact: "No impact expected if the current schedule holds.",
       suggestedPriority: "Low",
@@ -80,7 +80,7 @@ export function explainPurchaseOrder(po: {
   if (po.status === "RECEIVED") {
     return {
       whyItMatters: "Delivery is already complete.",
-      riskIfDelayed: "None — this order is fulfilled.",
+      riskIfDelayed: "None. This order is fulfilled.",
       expectedImpact: "No further action needed.",
       suggestedPriority: "None",
     };
@@ -96,9 +96,9 @@ export function explainPurchaseOrder(po: {
   }
 
   return {
-    whyItMatters: "Not yet in transit — still awaiting submission, approval, or shipment.",
+    whyItMatters: "Not yet in transit, still awaiting submission, approval, or shipment.",
     riskIfDelayed: "No delivery date risk to evaluate until the order ships.",
-    expectedImpact: "No impact yet — revisit once the order moves to In Transit.",
+    expectedImpact: "No impact yet. Revisit once the order moves to In Transit.",
     suggestedPriority: "Low",
   };
 }
@@ -126,7 +126,7 @@ export function explainEOQRecommendation(item: {
     expectedImpact:
       item.eoq !== null
         ? `Ordering the suggested ${formatNumber(item.eoq)} units (based on ${formatNumber(item.annualDemand)} units of trailing annual demand) restores the position toward a healthy buffer.`
-        : "No EOQ suggestion available — insufficient data to compute a recommended order quantity.",
-    confidenceNote: "Recommended order quantity only, not a persisted or probabilistic estimate — recalculates live from current demand and cost data.",
+        : "No EOQ suggestion available, insufficient data to compute a recommended order quantity.",
+    confidenceNote: "Recommended order quantity only, not a persisted or probabilistic estimate. Recalculates live from current demand and cost data.",
   };
 }

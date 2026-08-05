@@ -91,7 +91,7 @@ export function CreatePODialog({
             {item.sku} — {item.name}.{" "}
             {item.eoq !== null
               ? `Suggested order quantity from the EOQ engine: ${Math.round(item.eoq)} units at ${formatCurrency(item.unitCost)} each.`
-              : `No EOQ suggestion available for this product — enter a quantity manually. Unit cost: ${formatCurrency(item.unitCost)}.`}
+              : `No EOQ suggestion available for this product. Enter a quantity manually. Unit cost: ${formatCurrency(item.unitCost)}.`}
           </DialogDescription>
         </DialogHeader>
 

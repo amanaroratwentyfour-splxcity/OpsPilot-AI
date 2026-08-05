@@ -30,7 +30,7 @@ export function buildForecastingInsight(overview: {
     summary = `Moving Average accuracy is ${formatPercent(maAccuracy)} company-wide; Exponential Smoothing has no data yet.`;
   } else {
     const better = maAccuracy >= esAccuracy ? "Moving Average" : "Exponential Smoothing";
-    summary = `${better} currently performs better company-wide — Moving Average ${formatPercent(maAccuracy)} vs. Exponential Smoothing ${formatPercent(esAccuracy)}.`;
+    summary = `${better} currently performs better company-wide, Moving Average ${formatPercent(maAccuracy)} vs. Exponential Smoothing ${formatPercent(esAccuracy)}.`;
   }
 
   const insight =

@@ -47,7 +47,7 @@ function buildOverallStatus(score: number | null): string {
   if (score === null) return "Not enough data has been recalculated yet to compute an overall health score.";
   const rounded = Math.round(score);
   const tone = rounded >= 80 ? "in good shape" : rounded >= 60 ? "needs attention" : "requires immediate attention";
-  return `Operations Health Score is ${rounded}/100 — overall operations are ${tone}.`;
+  return `Operations Health Score is ${rounded}/100. Overall operations are ${tone}.`;
 }
 
 function buildInventorySection(counts: ExecutiveBriefInput["stockStatusCounts"]): string {
@@ -58,7 +58,7 @@ function buildInventorySection(counts: ExecutiveBriefInput["stockStatusCounts"])
   if (counts.OVERSTOCKED > 0) {
     parts.push(`${counts.OVERSTOCKED} position${counts.OVERSTOCKED === 1 ? " is" : "s are"} overstocked, tying up working capital`);
   }
-  if (parts.length === 0) return "No critical or overstocked positions — inventory levels are within healthy range.";
+  if (parts.length === 0) return "No critical or overstocked positions. Inventory levels are within healthy range.";
   return `${parts.join("; ")}.`.replace(/^./, (c) => c.toUpperCase());
 }
 
@@ -71,8 +71,8 @@ function buildForecastingSection(forecastAccuracy: number | null): string {
   if (forecastAccuracy === null) return "Not enough forecast history yet to assess accuracy.";
   const rounded = forecastAccuracy.toFixed(1);
   return forecastAccuracy >= 80
-    ? `Forecast accuracy is ${rounded}% — demand projections are currently trustworthy.`
-    : `Forecast accuracy is ${rounded}% — below the trust threshold, so demand-driven decisions deserve extra scrutiny.`;
+    ? `Forecast accuracy is ${rounded}%. Demand projections are currently trustworthy.`
+    : `Forecast accuracy is ${rounded}%, below the trust threshold, so demand-driven decisions deserve extra scrutiny.`;
 }
 
 function buildProcurementSection(
@@ -106,11 +106,11 @@ function buildProcurementSection(
 function buildRecommendedPriority(input: ExecutiveBriefInput): string {
   if (input.stockStatusCounts.CRITICAL > 0) {
     return input.topPriorityItem
-      ? `Start with the highest-severity item: ${input.topPriorityItem.entityName ?? "an active recommendation"} — ${input.topPriorityItem.justification}`
-      : `Address the ${input.stockStatusCounts.CRITICAL} critical inventory position${input.stockStatusCounts.CRITICAL === 1 ? "" : "s"} first — they carry the highest stockout risk.`;
+      ? `Start with the highest-severity item: ${input.topPriorityItem.entityName ?? "an active recommendation"}. ${input.topPriorityItem.justification}`
+      : `Address the ${input.stockStatusCounts.CRITICAL} critical inventory position${input.stockStatusCounts.CRITICAL === 1 ? "" : "s"} first. They carry the highest stockout risk.`;
   }
   if (input.overduePurchaseOrderCount > 0) {
-    return `Follow up on the ${input.overduePurchaseOrderCount} overdue purchase order${input.overduePurchaseOrderCount === 1 ? "" : "s"} — each is a delivery promise already missed.`;
+    return `Follow up on the ${input.overduePurchaseOrderCount} overdue purchase order${input.overduePurchaseOrderCount === 1 ? "" : "s"}. Each is a delivery promise already missed.`;
   }
   if (input.supplierReliability.belowThresholdCount > 0) {
     return `Review the supplier${input.supplierReliability.belowThresholdCount === 1 ? "" : "s"} below the reliability threshold before placing new orders with them.`;
@@ -118,5 +118,5 @@ function buildRecommendedPriority(input: ExecutiveBriefInput): string {
   if (input.stockStatusCounts.OVERSTOCKED > 0) {
     return `Consider drawing down the ${input.stockStatusCounts.OVERSTOCKED} overstocked position${input.stockStatusCounts.OVERSTOCKED === 1 ? "" : "s"} to free up working capital.`;
   }
-  return "No urgent action required — operations are running smoothly.";
+  return "No urgent action required. Operations are running smoothly.";
 }

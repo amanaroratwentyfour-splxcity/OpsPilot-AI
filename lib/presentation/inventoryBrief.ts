@@ -54,14 +54,14 @@ function buildInventoryHealth(avgHealthScore: number | null, totalPositions: num
   if (avgHealthScore === null) return "Not enough data yet to compute an average inventory health score.";
   const rounded = Math.round(avgHealthScore);
   const tone = rounded >= 80 ? "in good shape" : rounded >= 60 ? "needs attention" : "requires immediate attention";
-  return `Average inventory health is ${rounded}/100 across ${totalPositions} position${totalPositions === 1 ? "" : "s"} — ${tone}.`;
+  return `Average inventory health is ${rounded}/100 across ${totalPositions} position${totalPositions === 1 ? "" : "s"}, ${tone}.`;
 }
 
 function buildCriticalStockouts(
   critical: number,
   worstItem: InventoryBriefInput["worstCriticalItem"],
 ): string {
-  if (critical === 0) return "No positions are currently critical — no immediate stockout risk.";
+  if (critical === 0) return "No positions are currently critical, no immediate stockout risk.";
   const base = `${critical} position${critical === 1 ? " is" : "s are"} critically low and at risk of stockout.`;
   if (!worstItem) return base;
   return `${base} The most urgent is ${worstItem.name} at ${worstItem.warehouseName}: ${worstItem.onHandQty} units on hand against a reorder point of ${worstItem.reorderPoint}.`;
@@ -89,18 +89,18 @@ function buildInventoryTurnover(inventoryTurnover: number | null): string {
   if (inventoryTurnover === null) return "Not enough data yet to compute inventory turnover.";
   const rounded = inventoryTurnover.toFixed(1);
   return inventoryTurnover >= TARGET_TURNOVER_RATE
-    ? `Inventory turns over ${rounded}x per year company-wide — at or above the ${TARGET_TURNOVER_RATE}x target.`
-    : `Inventory turns over ${rounded}x per year company-wide — below the ${TARGET_TURNOVER_RATE}x target, worth reviewing alongside stockout risk.`;
+    ? `Inventory turns over ${rounded}x per year company-wide, at or above the ${TARGET_TURNOVER_RATE}x target.`
+    : `Inventory turns over ${rounded}x per year company-wide, below the ${TARGET_TURNOVER_RATE}x target, worth reviewing alongside stockout risk.`;
 }
 
 function buildRecommendedPriority(input: InventoryBriefInput): string {
   if (input.kpis.critical > 0) {
     return input.worstCriticalItem
-      ? `Start with ${input.worstCriticalItem.name} at ${input.worstCriticalItem.warehouseName} — it carries the highest stockout risk in view.`
-      : `Address the ${input.kpis.critical} critical position${input.kpis.critical === 1 ? "" : "s"} first — they carry the highest stockout risk.`;
+      ? `Start with ${input.worstCriticalItem.name} at ${input.worstCriticalItem.warehouseName}. It carries the highest stockout risk in view.`
+      : `Address the ${input.kpis.critical} critical position${input.kpis.critical === 1 ? "" : "s"} first. They carry the highest stockout risk.`;
   }
   if (input.kpis.overstocked > 0 && input.worstOverstockedItem) {
-    return `Review ${input.worstOverstockedItem.name} at ${input.worstOverstockedItem.warehouseName} — the most excess stock in view, worth drawing down first.`;
+    return `Review ${input.worstOverstockedItem.name} at ${input.worstOverstockedItem.warehouseName}, the most excess stock in view, worth drawing down first.`;
   }
-  return "No urgent action required — inventory is running smoothly.";
+  return "No urgent action required. Inventory is running smoothly.";
 }

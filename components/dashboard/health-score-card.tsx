@@ -1,11 +1,11 @@
 "use client";
 
-import { Activity, Info, Sparkles } from "lucide-react";
+import { Info, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { KPI_DEFINITIONS, kpiCurrentInterpretation } from "@/lib/presentation/kpiDefinitions";
-import { STATUS_BADGE_CLASS, KPI_CARD_HOVER_CLASS } from "@/components/dashboard/dashboard-kpi-card";
+import { STATUS_BADGE_CLASS, KPI_CARD_HOVER_CLASS, ACCENT_TINT_CLASS } from "@/components/dashboard/dashboard-kpi-card";
 import {
   biggestHealthScoreContributors,
   listHealthScoreComponents,
@@ -50,7 +50,7 @@ export function HealthScoreCard({
   const { insights } = useDashboardInsights();
 
   return (
-    <Card className={cn("sm:col-span-2 lg:col-span-2", KPI_CARD_HOVER_CLASS)}>
+    <Card className={cn("sm:col-span-2 lg:col-span-2", KPI_CARD_HOVER_CLASS, ACCENT_TINT_CLASS.red)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <div className="flex items-center gap-2">
           <CardTitle className="text-label uppercase text-muted-foreground">Operations Health Score</CardTitle>
@@ -74,7 +74,6 @@ export function HealthScoreCard({
             </PopoverContent>
           </Popover>
         </div>
-        <Activity className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={2} />
       </CardHeader>
       <CardContent>
         <div className={cn("text-kpi-hero tracking-tight", tone.text)}>{score !== null ? Math.round(score) : "—"}</div>

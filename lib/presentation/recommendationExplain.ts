@@ -27,7 +27,7 @@ export function explainRecommendation(
   severity: string,
   entityType: RecommendationEntityType,
 ): RecommendationExplanation {
-  const confidenceNote = "Not tracked for this recommendation type — every trigger below is a deterministic threshold, not a probabilistic estimate.";
+  const confidenceNote = "Not tracked for this recommendation type. Every trigger below is a deterministic threshold, not a probabilistic estimate.";
 
   if (category === "INVENTORY" && entityType === "product") {
     if (severity === "CRITICAL") {
@@ -55,7 +55,7 @@ export function explainRecommendation(
           : "Warehouse utilization has reached the warning capacity threshold.",
       expectedImpact:
         severity === "CRITICAL"
-          ? "Little to no room for incoming stock — inbound purchase orders may have nowhere to be received."
+          ? "Little to no room for incoming stock. Inbound purchase orders may have nowhere to be received."
           : "Capacity is tightening; incoming stock should be planned with this warehouse's headroom in mind.",
       confidenceNote,
     };

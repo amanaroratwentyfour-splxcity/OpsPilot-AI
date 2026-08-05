@@ -98,7 +98,7 @@ export function RecommendationCard({
               <div className="mt-2 rounded-md border border-ai/20 bg-ai/[0.06] p-3 text-sm">
                 <p className="mb-1 flex items-center gap-1.5 text-xs font-medium text-ai">
                   <Sparkles className="h-3 w-3" />
-                  AI Insight — optional enhancement, not a substitute for the justification above
+                  AI Insight: optional enhancement, not a substitute for the justification above
                 </p>
                 {recommendation.aiNarrative}
               </div>

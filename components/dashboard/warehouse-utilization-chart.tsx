@@ -21,6 +21,20 @@ export interface WarehouseUtilizationChartProps {
   titleAction?: ReactNode;
 }
 
+/**
+ * Shortens a warehouse name for the X-axis tick only (the full name stays
+ * in the underlying data, so the tooltip — which reads straight from the
+ * data, not the tick — still shows it in full). Generic pattern match, not
+ * a hardcoded company name: takes whatever single word immediately
+ * precedes "Distribution Center" and appends "DC", so it works for any
+ * imported dataset following that facility-naming convention and falls
+ * back to the untouched name otherwise.
+ */
+function shortenWarehouseLabel(name: string): string {
+  const match = name.match(/(\S+)\s+Distribution Center$/i);
+  return match ? `${match[1]} DC` : name;
+}
+
 export function WarehouseUtilizationChart({
   data,
   warningThreshold,
@@ -42,11 +56,16 @@ export function WarehouseUtilizationChart({
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 24, right: 8, left: -16, bottom: 0 }} barCategoryGap="20%">
             <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID_STROKE} strokeOpacity={0.5} />
             <XAxis
               dataKey="name"
-              tick={{ fontSize: 12, fill: CHART_AXIS_TICK_FILL }}
+              tickFormatter={shortenWarehouseLabel}
+              interval={0}
+              angle={-35}
+              textAnchor="end"
+              height={50}
+              tick={{ fontSize: 11, fill: CHART_AXIS_TICK_FILL }}
               axisLine={{ stroke: CHART_AXIS_LINE_STROKE }}
               tickLine={{ stroke: CHART_AXIS_LINE_STROKE }}
             />
@@ -55,6 +74,7 @@ export function WarehouseUtilizationChart({
               tick={{ fontSize: 12, fill: CHART_AXIS_TICK_FILL }}
               axisLine={{ stroke: CHART_AXIS_LINE_STROKE }}
               tickLine={{ stroke: CHART_AXIS_LINE_STROKE }}
+              allowDecimals={false}
               unit="%"
             />
             <Tooltip

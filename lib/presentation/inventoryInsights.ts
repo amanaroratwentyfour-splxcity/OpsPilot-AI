@@ -27,7 +27,7 @@ export function buildDemandHistoryInsight(
   if (weeklyQuantities.length < 2 || demandStatistics === null) {
     return {
       summary,
-      insight: `${weeklyQuantities.length} week${weeklyQuantities.length === 1 ? "" : "s"} of history recorded — not enough yet to assess a trend.`,
+      insight: `${weeklyQuantities.length} week${weeklyQuantities.length === 1 ? "" : "s"} of history recorded, not enough yet to assess a trend.`,
     };
   }
 
