@@ -2,6 +2,7 @@
 
 import { Area, Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ParetoCurveInfoPopover } from "./pareto-curve-info-popover";
 import {
   CHART_AXIS_LINE_STROKE,
   CHART_AXIS_TICK_FILL,
@@ -25,7 +26,10 @@ export function ParetoChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>ABC Pareto Curve (top 40 SKUs by usage value)</CardTitle>
+        <CardTitle className="flex items-center gap-1.5">
+          ABC Pareto Curve (top 40 SKUs by usage value)
+          <ParetoCurveInfoPopover />
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={280}>

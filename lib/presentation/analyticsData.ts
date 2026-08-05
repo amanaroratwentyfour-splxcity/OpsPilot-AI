@@ -17,7 +17,7 @@ import { getCompanyAnalyticsSnapshot } from "@/lib/domain/analytics/recalculate"
  * final `abcClass` letter is.
  */
 export async function getAnalyticsOverview() {
-  const [snapshot, warehouses, products] = await Promise.all([
+  const [snapshot, warehouses, products, inventoryRows] = await Promise.all([
     getCompanyAnalyticsSnapshot(),
     prisma.warehouse.findMany({ select: { id: true, name: true } }),
     prisma.product.findMany({
@@ -28,6 +28,16 @@ export async function getAnalyticsOverview() {
         category: true,
         unitCost: true,
         demandHistory: { orderBy: { periodDate: "asc" }, select: { quantitySold: true } },
+      },
+    }),
+    // Same onHandQty x unitCost x sum convention as inventoryData.ts's own
+    // totalValue — reused here per-warehouse for the Analytics Summary
+    // panel's "highest-value warehouse" fact, not a new formula.
+    prisma.inventory.findMany({
+      select: {
+        onHandQty: true,
+        product: { select: { unitCost: true } },
+        warehouse: { select: { id: true, name: true } },
       },
     }),
   ]);
@@ -68,6 +78,23 @@ export async function getAnalyticsOverview() {
     classCounts[row.abcClass] += 1;
   }
 
+  const valueByWarehouse = new Map<string, { name: string; value: number }>();
+  let totalInventoryValue = 0;
+  for (const row of inventoryRows) {
+    const value = row.onHandQty * row.product.unitCost;
+    totalInventoryValue += value;
+    const existing = valueByWarehouse.get(row.warehouse.id);
+    if (existing) {
+      existing.value += value;
+    } else {
+      valueByWarehouse.set(row.warehouse.id, { name: row.warehouse.name, value });
+    }
+  }
+  const highestValueWarehouse =
+    valueByWarehouse.size > 0
+      ? Array.from(valueByWarehouse.values()).reduce((max, w) => (w.value > max.value ? w : max))
+      : null;
+
   return {
     operationsHealthScore: snapshot.operationsHealthScore,
     operationsHealthComponents: snapshot.operationsHealthComponents,
@@ -75,5 +102,7 @@ export async function getAnalyticsOverview() {
     warehouseUtilizations,
     abcRanking,
     classCounts,
+    totalInventoryValue,
+    highestValueWarehouse,
   };
 }

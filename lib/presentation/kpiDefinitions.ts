@@ -183,6 +183,20 @@ export const KPI_DEFINITIONS = {
       "Keep demand history current with regular imports so recent periods are available to weight.",
     ],
   },
+  abcClassification: {
+    definition:
+      "A ranking of every product by its annual usage value (annual demand × unit cost), grouped into three classes by cumulative share of that value: Class A (top ~80%), Class B (next ~15%), Class C (remaining ~5%).",
+    whyItMatters:
+      "It tells inventory managers where to focus — a small number of Class A products drive most of the value at stake, so they deserve tighter control and more attention than the long tail of Class C products.",
+    howCalculated:
+      "Products are ranked by usage value, descending. Running cumulative share of total usage value determines the cutoff: at or below 80% is Class A, 80-95% is Class B, the rest is Class C.",
+    idealRange: "No universal ideal split — the useful read is which products fall in Class A, since those are the highest-value, highest-priority items regardless of exact counts.",
+    howToImprove: [
+      "Review Class A products first for stockout or overstock risk — they carry the most value at stake.",
+      "Class C products can typically tolerate looser reorder policies without much financial impact.",
+      "Use the Pareto Curve alongside this table to see the same ranking visually.",
+    ],
+  },
 } satisfies Record<string, KpiInfoContent>;
 
 export type KpiDefinitionKey = keyof typeof KPI_DEFINITIONS;
@@ -237,6 +251,8 @@ export function kpiCurrentInterpretation(key: KpiDefinitionKey, value: number | 
       return value >= 80
         ? `Currently ${value.toFixed(1)}% for this product — trustworthy.`
         : `Currently ${value.toFixed(1)}% for this product — below the 80% trust threshold.`;
+    case "abcClassification":
+      return `${Math.round(value)} product(s) currently in Class A — the highest-priority segment.`;
     default:
       return "";
   }

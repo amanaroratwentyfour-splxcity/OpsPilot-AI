@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,12 +17,15 @@ export interface WarehouseUtilizationChartProps {
   data: { warehouseName: string; utilizationPercent: number | null }[];
   warningThreshold: number;
   criticalThreshold: number;
+  /** Optional — renders next to the title only when supplied (e.g. an info popover). Every existing call site that omits this is visually unaffected. */
+  titleAction?: ReactNode;
 }
 
 export function WarehouseUtilizationChart({
   data,
   warningThreshold,
   criticalThreshold,
+  titleAction,
 }: WarehouseUtilizationChartProps) {
   const chartData = data.map((d) => ({
     name: d.warehouseName.replace("NovaFoods ", "").replace(" Distribution Center", ""),
@@ -31,7 +35,10 @@ export function WarehouseUtilizationChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Warehouse Utilization</CardTitle>
+        <CardTitle className="flex items-center gap-1.5">
+          Warehouse Utilization
+          {titleAction}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={240}>
