@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { KPI_DEFINITIONS, kpiCurrentInterpretation } from "@/lib/presentation/kpiDefinitions";
+import { STATUS_BADGE_CLASS, KPI_CARD_HOVER_CLASS } from "@/components/dashboard/dashboard-kpi-card";
 import {
   biggestHealthScoreContributors,
   listHealthScoreComponents,
@@ -12,9 +13,10 @@ import {
 } from "@/lib/presentation/healthScoreContributors";
 import { useDashboardInsights } from "./dashboard-insights-context";
 
+/** "Good" is the one exception to the KPI badge vocabulary (Healthy/Monitor/Critical) — reserved for this flagship composite score per the KPI polish pass. */
 const STATUS_TONE = {
   good: { label: "Good", text: "text-success", badge: "bg-success/15 text-success" },
-  warning: { label: "Needs Attention", text: "text-warning", badge: "bg-warning/15 text-warning" },
+  warning: { label: "Monitor", text: "text-warning", badge: "bg-warning/15 text-warning" },
   critical: { label: "Critical", text: "text-critical", badge: "bg-critical/15 text-critical" },
   neutral: { label: "Not enough data", text: "text-foreground", badge: "bg-secondary text-secondary-foreground" },
 } as const;
@@ -48,9 +50,9 @@ export function HealthScoreCard({
   const { insights } = useDashboardInsights();
 
   return (
-    <Card className="sm:col-span-2 lg:col-span-2">
+    <Card className={cn("sm:col-span-2 lg:col-span-2", KPI_CARD_HOVER_CLASS)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <CardTitle className="text-label uppercase text-muted-foreground">Operations Health Score</CardTitle>
           <Popover>
             <PopoverTrigger asChild>
@@ -72,14 +74,12 @@ export function HealthScoreCard({
             </PopoverContent>
           </Popover>
         </div>
-        <Activity className="h-4 w-4 text-muted-foreground" />
+        <Activity className="h-5 w-5 shrink-0 text-muted-foreground" strokeWidth={2} />
       </CardHeader>
       <CardContent>
-        <div className="flex items-baseline gap-3">
-          <div className={cn("text-kpi-hero", tone.text)}>{score !== null ? Math.round(score) : "—"}</div>
-          <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", tone.badge)}>{tone.label}</span>
-        </div>
-        <p className="mt-1 text-caption text-muted-foreground">out of 100</p>
+        <div className={cn("text-kpi-hero tracking-tight", tone.text)}>{score !== null ? Math.round(score) : "—"}</div>
+        <span className={cn(STATUS_BADGE_CLASS, "mt-2", tone.badge)}>{tone.label}</span>
+        <p className="mt-2 text-caption text-muted-foreground">out of 100</p>
       </CardContent>
     </Card>
   );

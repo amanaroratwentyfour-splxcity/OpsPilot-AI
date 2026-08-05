@@ -1,5 +1,5 @@
-import { TrendingUp, Truck, Sparkles, AlertCircle, Percent } from "lucide-react";
-import { KpiCard } from "@/components/kpi-card";
+import { RefreshCw, ShieldCheck, Sparkles, AlertTriangle, Target } from "lucide-react";
+import { DashboardKpiCard } from "@/components/dashboard/dashboard-kpi-card";
 import { CompanyBrandHeader } from "@/components/dashboard/company-brand-header";
 import { ExecutiveBrief } from "@/components/dashboard/executive-brief";
 import { HealthScoreCard } from "@/components/dashboard/health-score-card";
@@ -55,14 +55,14 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <HealthScoreCard score={summary.operationsHealthScore} components={summary.operationsHealthComponents} />
-          <KpiCard
+          <DashboardKpiCard
             label="Inventory Turnover"
             value={summary.inventoryTurnover !== null ? `${summary.inventoryTurnover.toFixed(1)}x` : "—"}
             subtitle="annualized"
-            icon={TrendingUp}
+            icon={RefreshCw}
             tone={turnoverTone}
             trend={{
-              label: turnoverTone === "good" ? "On target" : turnoverTone === "warning" ? "Below target" : "No data",
+              label: turnoverTone === "good" ? "Healthy" : turnoverTone === "warning" ? "Monitor" : "No data",
               tone: turnoverTone,
             }}
             info={{
@@ -71,14 +71,14 @@ export default async function DashboardPage() {
               currentInterpretation: kpiCurrentInterpretation("inventoryTurnover", summary.inventoryTurnover),
             }}
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Avg Supplier Reliability"
             value={formatNumber(summary.supplierReliability.average)}
             subtitle={`${summary.supplierReliability.belowThresholdCount} below threshold`}
-            icon={Truck}
+            icon={ShieldCheck}
             tone={reliabilityTone}
             trend={{
-              label: reliabilityTone === "good" ? "Healthy" : "Needs review",
+              label: reliabilityTone === "good" ? "Healthy" : "Monitor",
               tone: reliabilityTone,
             }}
             info={{
@@ -93,14 +93,14 @@ export default async function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <KpiCard
+          <DashboardKpiCard
             label="Active Recommendations"
             value={formatNumber(summary.recommendationCounts.total)}
             subtitle={`${summary.recommendationCounts.CRITICAL} critical, ${summary.recommendationCounts.WARNING} warning`}
             icon={Sparkles}
             tone={recommendationsTone}
             trend={{
-              label: recommendationsTone === "critical" ? "Action needed" : "Under control",
+              label: recommendationsTone === "critical" ? "Critical" : "Healthy",
               tone: recommendationsTone,
             }}
             info={{
@@ -112,11 +112,15 @@ export default async function DashboardPage() {
               ),
             }}
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Overdue Purchase Orders"
             value={formatNumber(summary.overduePurchaseOrderCount)}
-            icon={AlertCircle}
-            tone={summary.overduePurchaseOrderCount > 0 ? "warning" : "neutral"}
+            icon={AlertTriangle}
+            tone={summary.overduePurchaseOrderCount > 0 ? "warning" : "good"}
+            trend={{
+              label: summary.overduePurchaseOrderCount > 0 ? "Monitor" : "Healthy",
+              tone: summary.overduePurchaseOrderCount > 0 ? "warning" : "good",
+            }}
             info={{
               label: "Overdue Purchase Orders",
               content: KPI_DEFINITIONS.overduePurchaseOrders,
@@ -126,11 +130,11 @@ export default async function DashboardPage() {
               ),
             }}
           />
-          <KpiCard
+          <DashboardKpiCard
             label="Forecast Accuracy"
             value={formatPercent(summary.operationsHealthComponents.avgForecastAccuracy)}
             subtitle="100 − avg MAPE"
-            icon={Percent}
+            icon={Target}
             info={{
               label: "Forecast Accuracy",
               content: KPI_DEFINITIONS.forecastAccuracy,
