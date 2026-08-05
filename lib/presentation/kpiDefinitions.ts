@@ -155,6 +155,34 @@ export const KPI_DEFINITIONS = {
     ],
     whatIfIgnored: "N/A — this KPI is a scale measure; the Overstocked KPI is where a genuinely actionable risk would show up.",
   },
+  movingAverageAccuracy: {
+    definition:
+      "How closely this product's Moving Average forecast has matched actual demand, expressed as 100 minus the average forecast error (MAPE) across backtest periods.",
+    whyItMatters:
+      "Low accuracy for this product means its Moving Average forecast — and anything derived from it, like demand-trend recommendations — deserves more skepticism.",
+    howCalculated:
+      "Moving Average forecasts each period as the average of the preceding 4 periods' actual demand. Accuracy here is 100 minus the mean |actual − forecast| ÷ actual × 100 (MAPE) across this product's backtest periods.",
+    idealRange: "Above 80% is trustworthy. Below 70% (MAPE above 30%) is the threshold below which demand-trend recommendations are deliberately suppressed for this product.",
+    howToImprove: [
+      "Moving Average responds slowly to recent shifts in demand — if this product's sales pattern has changed recently, Exponential Smoothing may track it more closely.",
+      "Very volatile or low-volume products naturally produce a noisier MAPE regardless of method.",
+      "Keep demand history current with regular imports so the averaging window reflects recent reality.",
+    ],
+  },
+  exponentialSmoothingAccuracy: {
+    definition:
+      "How closely this product's Exponential Smoothing forecast has matched actual demand, expressed as 100 minus the average forecast error (MAPE) across backtest periods.",
+    whyItMatters:
+      "Low accuracy for this product means its Exponential Smoothing forecast — and anything derived from it, like demand-trend recommendations — deserves more skepticism.",
+    howCalculated:
+      "Exponential Smoothing forecasts each period as a weighted average of all preceding periods, weighted more heavily toward recent ones (smoothing factor α = 0.3). Accuracy here is 100 minus the mean |actual − forecast| ÷ actual × 100 (MAPE) across this product's backtest periods.",
+    idealRange: "Above 80% is trustworthy. Below 70% (MAPE above 30%) is the threshold below which demand-trend recommendations are deliberately suppressed for this product.",
+    howToImprove: [
+      "Exponential Smoothing reacts faster to recent shifts than Moving Average — if this product has a stable, low-noise pattern instead, Moving Average may perform better.",
+      "Very volatile or low-volume products naturally produce a noisier MAPE regardless of method.",
+      "Keep demand history current with regular imports so recent periods are available to weight.",
+    ],
+  },
 } satisfies Record<string, KpiInfoContent>;
 
 export type KpiDefinitionKey = keyof typeof KPI_DEFINITIONS;
@@ -204,6 +232,11 @@ export function kpiCurrentInterpretation(key: KpiDefinitionKey, value: number | 
         : `${Math.round(value)} position${value === 1 ? " is" : "s are"} overstocked right now.`;
     case "totalInventoryValue":
       return `Currently ₹${Math.round(value).toLocaleString("en-IN")} in on-hand inventory value.`;
+    case "movingAverageAccuracy":
+    case "exponentialSmoothingAccuracy":
+      return value >= 80
+        ? `Currently ${value.toFixed(1)}% for this product — trustworthy.`
+        : `Currently ${value.toFixed(1)}% for this product — below the 80% trust threshold.`;
     default:
       return "";
   }

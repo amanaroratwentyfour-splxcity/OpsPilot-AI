@@ -71,3 +71,35 @@ export async function getForecastData(productId: string) {
     hasForecastData: forecasts.length > 0,
   };
 }
+
+/**
+ * Company-wide Forecasting page data for the AI Forecast Summary: the
+ * average of every product's already-persisted per-period `mape` value
+ * (Forecast.mape, written by recalculateForecastsForProduct), grouped by
+ * method — a plain SQL average over an existing column, no new formula —
+ * plus the already-persisted DEMAND-category AIRecommendation rows
+ * (findDemandIncreaseCandidates' output) as "products requiring attention,"
+ * the same reuse pattern Procurement/Suppliers use for their own
+ * page-wide AI insight input.
+ */
+export async function getForecastingOverview() {
+  const [movingAverageAvg, exponentialSmoothingAvg, demandIncreaseRecommendations] = await Promise.all([
+    prisma.forecast.aggregate({ where: { method: "MOVING_AVERAGE", mape: { not: null } }, _avg: { mape: true } }),
+    prisma.forecast.aggregate({ where: { method: "EXPONENTIAL_SMOOTHING", mape: { not: null } }, _avg: { mape: true } }),
+    prisma.aIRecommendation.findMany({
+      where: { category: "DEMAND", status: "ACTIVE" },
+      select: { metricJustification: true, product: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    }),
+  ]);
+
+  return {
+    movingAverageAggregateMAPE: movingAverageAvg._avg.mape,
+    exponentialSmoothingAggregateMAPE: exponentialSmoothingAvg._avg.mape,
+    productsRequiringAttention: demandIncreaseRecommendations.map((r) => ({
+      productName: r.product?.name ?? null,
+      justification: r.metricJustification,
+    })),
+  };
+}

@@ -10,6 +10,7 @@ import { ForecastChart } from "./forecast-chart";
 import { formatDate, formatNumber, formatPercent } from "@/lib/format";
 import { LineChart } from "lucide-react";
 import type { getForecastData } from "@/lib/presentation/forecastingData";
+import { KPI_DEFINITIONS, kpiCurrentInterpretation } from "@/lib/presentation/kpiDefinitions";
 
 type ForecastData = Awaited<ReturnType<typeof getForecastData>>;
 
@@ -89,24 +90,39 @@ export function ForecastingExplorer({
 
       {!isPending && data && data.hasForecastData && (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <KpiCard
-              label="Moving Average Accuracy"
-              value={formatPercent(
-                data.aggregateMAPE.movingAverage !== null ? 100 - data.aggregateMAPE.movingAverage : null,
-              )}
-              subtitle={`MAPE ${formatPercent(data.aggregateMAPE.movingAverage)}`}
-            />
-            <KpiCard
-              label="Exponential Smoothing Accuracy"
-              value={formatPercent(
-                data.aggregateMAPE.exponentialSmoothing !== null
-                  ? 100 - data.aggregateMAPE.exponentialSmoothing
-                  : null,
-              )}
-              subtitle={`MAPE ${formatPercent(data.aggregateMAPE.exponentialSmoothing)}`}
-            />
-          </div>
+          {(() => {
+            const movingAverageAccuracy =
+              data.aggregateMAPE.movingAverage !== null ? 100 - data.aggregateMAPE.movingAverage : null;
+            const exponentialSmoothingAccuracy =
+              data.aggregateMAPE.exponentialSmoothing !== null ? 100 - data.aggregateMAPE.exponentialSmoothing : null;
+            return (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <KpiCard
+                  label="Moving Average Accuracy"
+                  value={formatPercent(movingAverageAccuracy)}
+                  subtitle={`MAPE ${formatPercent(data.aggregateMAPE.movingAverage)}`}
+                  info={{
+                    label: "Moving Average Accuracy",
+                    content: KPI_DEFINITIONS.movingAverageAccuracy,
+                    currentInterpretation: kpiCurrentInterpretation("movingAverageAccuracy", movingAverageAccuracy),
+                  }}
+                />
+                <KpiCard
+                  label="Exponential Smoothing Accuracy"
+                  value={formatPercent(exponentialSmoothingAccuracy)}
+                  subtitle={`MAPE ${formatPercent(data.aggregateMAPE.exponentialSmoothing)}`}
+                  info={{
+                    label: "Exponential Smoothing Accuracy",
+                    content: KPI_DEFINITIONS.exponentialSmoothingAccuracy,
+                    currentInterpretation: kpiCurrentInterpretation(
+                      "exponentialSmoothingAccuracy",
+                      exponentialSmoothingAccuracy,
+                    ),
+                  }}
+                />
+              </div>
+            );
+          })()}
 
           <ForecastChart series={data.series} />
 
