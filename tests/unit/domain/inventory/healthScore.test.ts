@@ -63,7 +63,7 @@ describe("computeInventoryHealthScore", () => {
 describe("classifyStockStatus and computeInventoryHealthScore stay boundary-consistent", () => {
   it("OVERSTOCKED classification only ever occurs where health score has entered its floored band", async () => {
     const { classifyStockStatus } = await import("@/lib/domain/inventory/stockStatus");
-    const { StockStatus } = await import("@/lib/generated/prisma/enums");
+    const { StockStatus } = await import("@/lib/generated/prisma");
     const reorderPoint = 200;
 
     for (const ratio of [3.9, 4.0, 4.1, 5, 10, 50]) {

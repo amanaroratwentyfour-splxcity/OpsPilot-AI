@@ -1,4 +1,4 @@
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import { DEMAND_INCREASE_THRESHOLD_PERCENT, MAX_TRUSTED_FORECAST_MAPE } from "../config";
 import type { RecommendationCandidate } from "./recommendationCandidate";
 

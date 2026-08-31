@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { StockStatus, RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { StockStatus, RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import { findOverstockedPositions } from "@/lib/domain/recommendations/overstockedInventory";
 import type { InventoryPositionInput } from "@/lib/domain/recommendations/criticalInventory";
 

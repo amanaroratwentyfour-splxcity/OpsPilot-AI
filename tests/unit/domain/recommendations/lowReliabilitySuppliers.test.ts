@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import { findLowReliabilitySuppliers } from "@/lib/domain/recommendations/lowReliabilitySuppliers";
 
 describe("findLowReliabilitySuppliers", () => {

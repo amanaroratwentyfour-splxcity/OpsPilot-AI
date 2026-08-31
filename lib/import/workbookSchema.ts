@@ -1,4 +1,4 @@
-import { ProductCategory, PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import { ProductCategory, PurchaseOrderStatus } from "@/lib/generated/prisma";
 
 /**
  * Single source of truth for OpsPilot_Template.xlsx — every sheet, every

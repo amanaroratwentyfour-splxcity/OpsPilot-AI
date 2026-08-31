@@ -1,5 +1,5 @@
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { ForecastMethod } from "@/lib/generated/prisma/enums";
+import { ForecastMethod } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/db/prisma";
 import { FORECAST_BACKTEST_WEEKS } from "../config";
 import {

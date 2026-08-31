@@ -1,4 +1,4 @@
-import { RecommendationCategory, RecommendationSeverity, StockStatus } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity, StockStatus } from "@/lib/generated/prisma";
 import type { RecommendationCandidate } from "./recommendationCandidate";
 import type { InventoryPositionInput } from "./criticalInventory";
 

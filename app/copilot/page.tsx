@@ -11,7 +11,7 @@ import {
 } from "@/lib/presentation/constants";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { matchEnumValue } from "@/lib/api/http";
-import { RecommendationCategory, RecommendationSeverity, RecommendationStatus } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity, RecommendationStatus } from "@/lib/generated/prisma";
 
 export default async function CopilotPage({
   searchParams,

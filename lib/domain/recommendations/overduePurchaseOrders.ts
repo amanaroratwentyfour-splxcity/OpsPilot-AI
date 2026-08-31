@@ -1,4 +1,4 @@
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import type { RecommendationCandidate } from "./recommendationCandidate";
 
 export interface PurchaseOrderPositionInput {

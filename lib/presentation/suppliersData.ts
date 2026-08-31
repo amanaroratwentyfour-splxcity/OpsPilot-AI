@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import { PurchaseOrderStatus } from "@/lib/generated/prisma";
 import { computeSupplierMetrics } from "@/lib/domain/suppliers/supplierMetrics";
 import { LOW_RELIABILITY_THRESHOLD } from "@/lib/domain/config";
 

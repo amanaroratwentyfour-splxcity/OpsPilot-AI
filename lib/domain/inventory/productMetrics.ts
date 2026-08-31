@@ -1,4 +1,4 @@
-import { StockStatus } from "@/lib/generated/prisma/enums";
+import { StockStatus } from "@/lib/generated/prisma";
 import { computeDemandStatistics, type DemandStatistics } from "./demandStatistics";
 import { computeSafetyStock } from "./safetyStock";
 import { computeReorderPoint } from "./reorderPoint";

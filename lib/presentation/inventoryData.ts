@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { computeInventoryHealthScore } from "@/lib/domain/inventory/healthScore";
 import { computeDemandStatistics } from "@/lib/domain/inventory/demandStatistics";
 import { getCompanyAnalyticsSnapshot } from "@/lib/domain/analytics/recalculate";
-import type { ProductCategory, StockStatus } from "@/lib/generated/prisma/enums";
+import type { ProductCategory, StockStatus } from "@/lib/generated/prisma";
 
 export interface InventoryListFilters {
   warehouseId?: string;

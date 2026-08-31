@@ -1,5 +1,5 @@
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import { PurchaseOrderStatus } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/db/prisma";
 import { computeSupplierMetrics, type SupplierMetrics } from "./supplierMetrics";
 

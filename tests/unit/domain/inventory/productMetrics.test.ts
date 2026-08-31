@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { computeProductInventoryMetrics } from "@/lib/domain/inventory/productMetrics";
 import { classifyStockStatus } from "@/lib/domain/inventory/stockStatus";
 import { computeInventoryHealthScore } from "@/lib/domain/inventory/healthScore";
-import { StockStatus } from "@/lib/generated/prisma/enums";
+import { StockStatus } from "@/lib/generated/prisma";
 
 // Same reference series used throughout Milestone 2.1's tests and
 // OPERATIONS_ENGINE_SPEC.md's worked example: weekly [560,630,700,770,840]

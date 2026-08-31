@@ -1,4 +1,4 @@
-import { StockStatus } from "@/lib/generated/prisma/enums";
+import { StockStatus } from "@/lib/generated/prisma";
 
 /**
  * Classifies an Inventory position's on-hand stock relative to its reorder

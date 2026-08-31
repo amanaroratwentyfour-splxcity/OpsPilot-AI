@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import { toNarrativeInput } from "@/lib/ai/narrativeInput";
 import type { RecommendationCandidate } from "@/lib/domain/recommendations/recommendationCandidate";
 

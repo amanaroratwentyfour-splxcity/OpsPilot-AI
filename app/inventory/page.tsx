@@ -19,7 +19,7 @@ import { PRODUCT_CATEGORIES, STOCK_STATUSES } from "@/lib/presentation/constants
 import { formatNumber, formatCurrency } from "@/lib/format";
 import { prisma } from "@/lib/db/prisma";
 import { matchEnumValue, toPositiveInt } from "@/lib/api/http";
-import { ProductCategory, StockStatus } from "@/lib/generated/prisma/enums";
+import { ProductCategory, StockStatus } from "@/lib/generated/prisma";
 
 export default async function InventoryPage({
   searchParams,

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { computeAnnualDemand } from "@/lib/domain/procurement/annualDemand";
 import { computeEOQ } from "@/lib/domain/procurement/eoq";
-import type { PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import type { PurchaseOrderStatus } from "@/lib/generated/prisma";
 
 export interface ProcurementFilters {
   status?: PurchaseOrderStatus;

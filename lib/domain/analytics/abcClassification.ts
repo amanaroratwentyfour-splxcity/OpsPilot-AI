@@ -1,4 +1,4 @@
-import { ABCClass } from "@/lib/generated/prisma/enums";
+import { ABCClass } from "@/lib/generated/prisma";
 import { ABC_CUTOFFS } from "../config";
 
 export interface ProductUsageValue {

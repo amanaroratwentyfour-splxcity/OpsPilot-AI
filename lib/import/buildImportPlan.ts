@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type ExcelJS from "exceljs";
 import type { Prisma } from "@/lib/generated/prisma/client";
-import type { ProductCategory, PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import type { ProductCategory, PurchaseOrderStatus } from "@/lib/generated/prisma";
 import type { ParsedRow, ParsedWorkbook } from "./parseWorkbook";
 
 /**

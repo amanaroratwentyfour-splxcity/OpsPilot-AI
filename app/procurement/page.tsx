@@ -15,7 +15,7 @@ import { PURCHASE_ORDER_STATUSES } from "@/lib/presentation/constants";
 import { formatNumber } from "@/lib/format";
 import { prisma } from "@/lib/db/prisma";
 import { matchEnumValue, toPositiveInt } from "@/lib/api/http";
-import { PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import { PurchaseOrderStatus } from "@/lib/generated/prisma";
 
 export default async function ProcurementPage({
   searchParams,

@@ -1,4 +1,4 @@
-import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 import { LOW_RELIABILITY_THRESHOLD } from "../config";
 import type { RecommendationCandidate } from "./recommendationCandidate";
 

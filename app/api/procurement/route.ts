@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProcurementOverview } from "@/lib/presentation/procurementData";
-import { PurchaseOrderStatus } from "@/lib/generated/prisma/enums";
+import { PurchaseOrderStatus } from "@/lib/generated/prisma";
 import { parseEnumParam, parsePaginationParams, withRouteErrorHandling } from "@/lib/api/http";
 
 export const GET = withRouteErrorHandling(async (request: NextRequest) => {

@@ -3,7 +3,7 @@ import {
   RecommendationCategory,
   RecommendationSeverity,
   RecommendationStatus,
-} from "@/lib/generated/prisma/enums";
+} from "@/lib/generated/prisma";
 
 export interface CopilotFilters {
   status?: RecommendationStatus;

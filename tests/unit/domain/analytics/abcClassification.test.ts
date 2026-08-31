@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { classifyABC } from "@/lib/domain/analytics/abcClassification";
-import { ABCClass } from "@/lib/generated/prisma/enums";
+import { ABCClass } from "@/lib/generated/prisma";
 
 describe("classifyABC", () => {
   it("classifies a reference catalog against the 80/95 cumulative-value cutoffs", () => {

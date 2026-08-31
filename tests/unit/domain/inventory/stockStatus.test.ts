@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { classifyStockStatus } from "@/lib/domain/inventory/stockStatus";
-import { StockStatus } from "@/lib/generated/prisma/enums";
+import { StockStatus } from "@/lib/generated/prisma";
 
 describe("classifyStockStatus", () => {
   const reorderPoint = 200;

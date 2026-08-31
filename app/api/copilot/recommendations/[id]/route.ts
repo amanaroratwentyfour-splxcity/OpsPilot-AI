@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { RecommendationStatus } from "@/lib/generated/prisma/enums";
+import { RecommendationStatus } from "@/lib/generated/prisma";
 import { ApiError, withRouteErrorHandling } from "@/lib/api/http";
 
 const VALID_STATUSES = Object.values(RecommendationStatus);

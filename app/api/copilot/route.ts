@@ -4,7 +4,7 @@ import {
   RecommendationCategory,
   RecommendationSeverity,
   RecommendationStatus,
-} from "@/lib/generated/prisma/enums";
+} from "@/lib/generated/prisma";
 import { parseEnumParam, withRouteErrorHandling } from "@/lib/api/http";
 
 export const GET = withRouteErrorHandling(async (request: NextRequest) => {

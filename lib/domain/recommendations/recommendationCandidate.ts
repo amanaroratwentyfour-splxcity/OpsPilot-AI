@@ -1,4 +1,4 @@
-import type { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma/enums";
+import type { RecommendationCategory, RecommendationSeverity } from "@/lib/generated/prisma";
 
 /**
  * A deterministic recommendation produced by one rule function, before
