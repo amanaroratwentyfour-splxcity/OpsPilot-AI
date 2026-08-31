@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -19,6 +20,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
+    "@libsql/client": "^0.17.4",
+    "@prisma/adapter-libsql": "^6.19.3",
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",

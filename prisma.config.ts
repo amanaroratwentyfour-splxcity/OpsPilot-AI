@@ -2,15 +2,22 @@
 // npm install --save-dev prisma dotenv
 import "dotenv/config";
 import { defineConfig, env } from "prisma/config";
+import { PrismaLibSQL } from "@prisma/adapter-libsql";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
+  experimental: {
+    adapter: true,
+  },
   migrations: {
     path: "prisma/migrations",
     seed: "tsx prisma/seed.ts",
   },
-  engine: "classic",
-  datasource: {
-    url: env("DATABASE_URL"),
-  },
+  engine: "js",
+  adapter: async () =>
+    new PrismaLibSQL({
+      url: env("DATABASE_URL"),
+      // Optional: unset for local file: URLs, required for a remote Turso database.
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    }),
 });
